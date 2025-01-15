@@ -3,6 +3,7 @@ import json, argparse
 import pickle
 import numpy as np
 import msprime
+from scipy.spatial.distance import squareform
 
 parser = argparse.ArgumentParser(
                     prog='msprime_simulator')
@@ -10,7 +11,7 @@ parser.add_argument('--output', type=str, default="output")
 parser.add_argument('--Ne', type=int, default=25000000)
 parser.add_argument('--length', type=int, default=5000000)
 parser.add_argument('--track_length', type=int, default=5000)
-parser.add_argument('--nsample', type=int, default=150)
+parser.add_argument('--nsample', type=int, default=50)
 parser.add_argument('--mu', type=float, default=0.0000000006)
 parser.add_argument('--r_m', type=float, default=0.00)
 parser.add_argument('--model', type=str, default="kingman")
@@ -24,7 +25,7 @@ mu = args.mu  # mutation rate
 r_m = args.r_m # r/m
 
 r = r_m * mu
-print(r)
+print("r="+str(r))
 
 match = re.match(r"^beta([0-9]*\.[0-9]+)$", args.model)
 if match:
@@ -55,42 +56,34 @@ i_indices, j_indices = np.tril_indices(nsample, -1)
 pairs = np.column_stack((i_indices, j_indices))
 
 distance_list = mts.diversity(pairs, mode='site')
-distance_matrix = np.zeros((nsample, nsample))
-
-distance_matrix[i_indices, j_indices] = distance_list
-distance_matrix[j_indices, i_indices] = distance_list
+distance_matrix = squareform(distance_list)
 
 print("distance matrix computed")
 
 ### FRACTION OF IDENTICAL BLOCKS
-def prop_identical_blk(s1, s2, m):
+blk_size = 1000 # blk_size
+sites = [int(site.position) for site in mts.sites()]
+
+# tally number of sites per block
+block_indices = np.floor_divide(sites, blk_size)
+muts_per_blk = np.bincount(block_indices)
+muts_per_blk = muts_per_blk[muts_per_blk != 0]
+
+def prop_identical_blk(s1, s2):
+    i = 0
     matches = 0
-    n = len(s1)
-    num_blocks = n-m+1
-
-    i=0
-    prev_match = False
-    while i <= n-m:
-        if (s1[i : i+m] == s2[i : i+m]):
+    for muts in muts_per_blk:
+        if np.array_equal(s1[i : i + muts], s2[i : i + muts]):
             matches += 1
-            i += 1
-            prev_match = True
-        elif prev_match:
-            i += m  
-        else:
-            i += 1
-
-    return matches/num_blocks
+        i += muts
+    return matches / len(muts_per_blk)
 
 liu_and_good_indices = random.sample(range(len(pairs)), 2*int(math.sqrt(len(pairs))))
 liu_and_good_pairs = []
 genotypes = mts.genotype_matrix()
 for k in liu_and_good_indices:
     (i,j) = pairs[k]
-    genome_i = ''.join(map(str, genotypes[:, i]))
-    genome_j = ''.join(map(str, genotypes[:, j]))
-
-    liu_and_good_pairs.append((prop_identical_blk(genome_i, genome_j, 1000), distance_list[k]))
+    liu_and_good_pairs.append((prop_identical_blk(genotypes[:, i], genotypes[:, j]), distance_list[k]))
 
 print("liu and good computed")
 

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 ###
 save_fig = False
-run_index = "r006"
+run_index = "r007"
 ###
 
 input_path = "runs/" + run_index
@@ -45,10 +45,8 @@ null_x_vals, null_y_vals = zip(*null_liu_and_good_pairs)
 sns.scatterplot(y=null_y_vals, x=null_x_vals, color = "grey")
 
 ### NULL LINE
-def null_expectation(f):
-    return -1/(l) * np.log(f)
 n_x = np.linspace(0, 1, 1000)
-n_y = null_expectation(n_x)
+n_y = -1/(l) * np.log(n_x)
 plt.plot(n_x, n_y, color='grey')
 
 ### RECOMBINANT LINE
@@ -56,10 +54,8 @@ mu = params["mu"]
 r_m = params["r_m"]
 r = r_m * mu * l
 
-def recombinant_expectation(f):
-    return average_divergence * (1-pow(f,r/(r+mu*l)))
 r_x = np.linspace(0, 1, 1000)
-r_y = recombinant_expectation(r_x)
+r_y = average_divergence * (1-pow(r_x,r/(r+mu*l)))
 
 plt.plot(r_x, r_y, color='red')
 

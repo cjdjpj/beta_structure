@@ -10,5 +10,5 @@ def n_beta(a, T2):
     """if returns 0, means N is unimportant. if returns inf, means T unattainable with given alpha"""
     return ((T2 * a * scipy.special.beta(2 - a, a)) / ((1 + 1 / (2**(a - 1) * (a - 1)))**a))**(1 / (a - 1))
 
-print(n_beta(1.4,250000))
+print(n_beta(1.9,25000000))
 

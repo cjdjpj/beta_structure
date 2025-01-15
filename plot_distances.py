@@ -9,7 +9,7 @@ from scipy.spatial.distance import squareform
 
 ###
 save_fig = False
-run_index = "r001"
+run_index = "r008"
 ###
 
 input_path = "runs/" + run_index
