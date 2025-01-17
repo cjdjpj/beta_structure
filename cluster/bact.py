@@ -11,7 +11,7 @@ parser.add_argument('--output', type=str, default="output")
 parser.add_argument('--Ne', type=int, default=25000000)
 parser.add_argument('--length', type=int, default=5000000)
 parser.add_argument('--track_length', type=int, default=5000)
-parser.add_argument('--nsample', type=int, default=50)
+parser.add_argument('--nsample', type=int, default=500)
 parser.add_argument('--mu', type=float, default=0.0000000006)
 parser.add_argument('--r_m', type=float, default=0.00)
 parser.add_argument('--model', type=str, default="kingman")
@@ -78,7 +78,7 @@ def prop_identical_blk(s1, s2):
         i += muts
     return matches / len(muts_per_blk)
 
-liu_and_good_indices = random.sample(range(len(pairs)), 2*int(math.sqrt(len(pairs))))
+liu_and_good_indices = random.sample(range(len(pairs)), 10*int(math.sqrt(len(pairs))))
 liu_and_good_pairs = []
 genotypes = mts.genotype_matrix()
 for k in liu_and_good_indices:

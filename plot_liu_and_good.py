@@ -11,7 +11,7 @@ run_index = "r007"
 ###
 
 input_path = "runs/" + run_index
-l = 1000 # segment of identity length
+blk_size = 1000 # segment of identity length
 
 with open(input_path + ".json", "r") as file:
     params = json.load(file)
@@ -31,7 +31,7 @@ print("Average pi:" + str(average_divergence))
 ### LIU & GOOD PLOT
 
 plt.figure(figsize = (9,9))
-plt.ylim(0, 0.03)
+plt.ylim(0, 0.05)
 plt.xlim(0, 1)
 
 ### NULL POINTS
@@ -46,16 +46,18 @@ sns.scatterplot(y=null_y_vals, x=null_x_vals, color = "grey")
 
 ### NULL LINE
 n_x = np.linspace(0, 1, 1000)
-n_y = -1/(l) * np.log(n_x)
+n_y = -1/blk_size * np.log(n_x)
 plt.plot(n_x, n_y, color='grey')
 
 ### RECOMBINANT LINE
 mu = params["mu"]
 r_m = params["r_m"]
-r = r_m * mu * l
+l = params["length"]
+t = params["track_length"]
+R = r_m * mu * t
 
 r_x = np.linspace(0, 1, 1000)
-r_y = average_divergence * (1-pow(r_x,r/(r+mu*l)))
+r_y = average_divergence * (1-pow(r_x,R/(R+mu*blk_size)))
 
 plt.plot(r_x, r_y, color='red')
 

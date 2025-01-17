@@ -51,11 +51,12 @@ else:
 
 ### PAIRWISE DISTANCE DENDROGRAM
 condensed_distance_matrix = squareform(distance_matrix)
-Z = sch.linkage(condensed_distance_matrix, method='ward')
+Z = sch.linkage(condensed_distance_matrix, method='average')
+# Z[:, 2] = Z[:, 2] / mu
 
 plt.figure(figsize=(9, 9))
 sch.dendrogram(Z)
-plt.ylabel("Continuous dissimilarity measure using Ward's linkage")
+plt.ylabel("Pairwise distances")
 plt.xlabel("Samples")
 plt.xticks([])
 if save_fig == True:
