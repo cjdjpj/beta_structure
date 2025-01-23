@@ -1,15 +1,14 @@
 import json
-import tskit
 import pickle
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.manifold import MDS
 import scipy.cluster.hierarchy as sch
 from scipy.spatial.distance import squareform
+from sklearn.manifold import MDS
 
 ###
 save_fig = False
-run_index = "r008"
+run_index = "r001"
 ###
 
 input_path = "runs/" + run_index
@@ -18,17 +17,16 @@ with open(input_path + ".json", "r") as file:
     params = json.load(file)
     print(json.dumps(params, indent = 4))
 
-mts = tskit.load(input_path)
-nsample = mts.num_samples
-with open(input_path + "_ds", "rb") as file:
+with open(input_path + "_dist", "rb") as file:
     distance_list = pickle.load(file)
-    distance_matrix = pickle.load(file)
+
+distance_matrix = squareform(distance_list)
 
 print("Average pi:" + str(sum(distance_list)/len(distance_list)))
 
 ### PAIRWISE DISTANCE HISTOGRAM
 plt.figure(figsize = (9,9))
-sns.histplot(distance_list);
+sns.histplot(distance_list, stat='probability');
 plt.xlabel("Pairwise mean number of nucleotide differences (Nei's pi)")
 plt.ylabel("Frequency")
 if save_fig == True:
@@ -50,17 +48,17 @@ else:
     plt.show()
 
 ### PAIRWISE DISTANCE DENDROGRAM
-condensed_distance_matrix = squareform(distance_matrix)
-Z = sch.linkage(condensed_distance_matrix, method='average')
-# Z[:, 2] = Z[:, 2] / mu
+Z = sch.linkage(distance_list, method='average')
+mu = params["mu"]
+Z[:, 2] = Z[:, 2] / mu
 
 plt.figure(figsize=(9, 9))
 sch.dendrogram(Z)
-plt.ylabel("Pairwise distances")
+plt.ylabel("Generations")
 plt.xlabel("Samples")
 plt.xticks([])
 if save_fig == True:
-    plt.savefig(run_index + "d.png", dpi=300)
+    plt.savefig(run_index + "c.png", dpi=300)
 else:
     plt.show()
 

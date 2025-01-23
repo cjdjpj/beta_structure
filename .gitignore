@@ -2,4 +2,5 @@ __pycache__/
 _deprecated/
 runs/
 .DS_Store
-
+temp/
+typings/
