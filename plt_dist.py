@@ -3,8 +3,10 @@ import pickle
 import seaborn as sns
 import matplotlib.pyplot as plt
 import scipy.cluster.hierarchy as sch
+import numpy as np
 from scipy.spatial.distance import squareform
 from sklearn.manifold import MDS
+np.set_printoptions(legacy='1.25')
 
 ###
 save_fig = False
@@ -20,13 +22,13 @@ with open(input_path + ".json", "r") as file:
 with open(input_path + "_dist", "rb") as file:
     distance_list = pickle.load(file)
 
-distance_matrix = squareform(distance_list)
+print(len(distance_list))
 
 print("Average pi:" + str(sum(distance_list)/len(distance_list)))
 
 ### PAIRWISE DISTANCE HISTOGRAM
 plt.figure(figsize = (9,9))
-sns.histplot(distance_list, stat='probability');
+sns.histplot(distance_list, stat='probability')
 plt.xlabel("Pairwise mean number of nucleotide differences (Nei's pi)")
 plt.ylabel("Frequency")
 if save_fig == True:
@@ -36,6 +38,7 @@ else:
 
 ### MDS
 mds = MDS(n_components=2, dissimilarity="precomputed", random_state=42)
+distance_matrix = squareform(distance_list)
 mds_coords = mds.fit_transform(distance_matrix)
 
 plt.figure(figsize = (9,9))

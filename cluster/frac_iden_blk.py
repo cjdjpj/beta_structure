@@ -22,7 +22,7 @@ with open(args.input + ".json", "r") as file:
 # choose pairs
 pairs = list(combinations(range(params["nsample"]), 2))
 random.seed(42)
-random_pair_indices = random.sample(range(len(pairs)), args.num_pairs)
+pairs_sample = random.sample(pairs, args.num_pairs)
 
 # compute
 sites = [int(site.position) for site in mts.sites()]
@@ -43,8 +43,8 @@ def prop_identical_blk(s1, s2):
 
 frac_iden_blk= []
 genotypes = mts.genotype_matrix()
-for pair_index in random_pair_indices:
-    (i,j) = pairs[pair_index]
+for pair in pairs_sample:
+    (i,j) = pair
     frac_iden_blk.append(prop_identical_blk(genotypes[:, i], genotypes[:, j]))
 
 with open(args.input + "_frac_iden_blk", 'wb') as file:

@@ -1,14 +1,14 @@
+import math
 import random
 import json
 import pickle
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-from itertools import combinations
 
 ###
 save_fig = False
-run_index = "r002"
+run_index = "r001"
 ###
 
 input_path = "runs/" + run_index
@@ -27,6 +27,8 @@ with open(input_path + "_dist", "rb") as file:
 average_divergence = sum(distance_list)/len(distance_list)
 print("Average pi:" + str(average_divergence))
 
+random.seed(42)
+random_pair_indices = random.sample(range(math.comb(params["nsample"], 2)), len(frac_iden_blk))
 
 ### LIU & GOOD PLOT
 plt.figure(figsize = (9,9))
@@ -38,8 +40,10 @@ null_index = "r001"
 null_path = "runs/" + null_index
 with open(null_path + "_frac_iden_blk", "rb") as file:
     null_frac_iden_blk = pickle.load(file)
-null_x_vals, null_y_vals = zip(*null_frac_iden_blk)
-sns.scatterplot(y=null_y_vals, x=null_x_vals, color = "grey")
+with open(null_path + "_dist", "rb") as file:
+    null_distance_list = pickle.load(file)
+adjusted_null_distance_list = null_distance_list[random_pair_indices]
+sns.scatterplot(y=adjusted_null_distance_list, x=null_frac_iden_blk, color = "grey")
 
 ### NULL LINE
 n_x = np.linspace(0, 1, 1000)
@@ -58,13 +62,7 @@ r_y = average_divergence * (1-pow(r_x,R/(R+mu*blk_size)))
 
 plt.plot(r_x, r_y, color='red')
 
-pairs = list(combinations(range(params["nsample"]), 2))
-random.seed(42)
-random_pair_indices = random.sample(range(len(pairs)), len(frac_iden_blk))
-adjusted_distance_list = []
-for i in random_pair_indices:
-    adjusted_distance_list.append(distance_list[i])
-
+adjusted_distance_list = distance_list[random_pair_indices]
 sns.scatterplot(y=adjusted_distance_list, x=frac_iden_blk)
 plt.xlabel("Proportion of 1kb sequence blocks identical")
 plt.ylabel("Pairwise mean number of nucleotide differences (Nei's pi)")

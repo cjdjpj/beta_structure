@@ -20,10 +20,10 @@ with open(args.input + ".json", "r") as file:
 # choose pairs
 pairs = list(combinations(range(params["nsample"]), 2))
 random.seed(42)
-random_pair_indices = random.sample(range(len(pairs)), args.num_pairs)
+pairs_sample = random.sample(pairs, args.num_pairs)
 
 # compute
-distance_list = mts.diversity(pairs, mode='site')
+distance_list = mts.diversity(pairs_sample, mode='site')
 
 # dump to file
 with open(args.input + "_dist", 'wb') as file:
