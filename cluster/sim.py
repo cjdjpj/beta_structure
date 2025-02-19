@@ -10,7 +10,7 @@ parser.add_argument('--track_length', type=int, default=5000)
 parser.add_argument('--nsample', type=int, default=50)
 parser.add_argument('--mu', type=float, default=0.0000000006)
 parser.add_argument('--r_m', type=float, default=0.0)
-parser.add_argument('--model', type=str, default="beta1.1")
+parser.add_argument('--model', type=str, default="kingman")
 parser.add_argument('--pi', type=float, default=0.03)
 
 args = parser.parse_args()

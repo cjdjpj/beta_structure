@@ -11,9 +11,9 @@ save_fig = False
 def n_beta(a, T2):
     return ((T2 * a * scipy.special.beta(2 - a, a)) / ((1 + 1 / (2**(a - 1) * (a - 1)))**a))**(1 / (a - 1))
 
-model_s = "beta"
+model_s = "kingman"
 if model_s == "beta":
-    alpha = 1.01
+    alpha = 1.1
     model = msprime.BetaCoalescent(alpha=alpha),
     ne = n_beta(alpha, 1)
     alpha_str = r"($\alpha$ = " + str(alpha) + ")"
@@ -26,11 +26,11 @@ else:
 ts = msprime.sim_ancestry(
     model = model,
     population_size=ne,
-    samples=30000, 
+    samples=16, 
     ploidy=1, 
 )
 
-# svg_output = ts.draw_svg(size=(1000, 800), y_axis=True)
+# svg_output = ts.draw_svg(size=(2000, 1200), y_axis=True, symbol_size=0, node_labels = {})
 # with open(model_s + ".svg", "w") as f:
 #     f.write(svg_output)
 

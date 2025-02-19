@@ -6,7 +6,7 @@ import seaborn as sns
 
 ###
 save_fig = False
-run_index = "r008"
+run_index = "r001"
 ###
 
 input_path = "runs/" + run_index

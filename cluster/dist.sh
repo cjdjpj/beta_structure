@@ -5,5 +5,4 @@
 #SBATCH --ntasks=1
 
 srun python dist.py\
-    --input "$1"\
-    --num_pairs 124750
+    --input "$1"

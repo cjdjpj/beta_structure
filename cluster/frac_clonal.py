@@ -20,12 +20,12 @@ with open(args.input + ".json", "r") as file:
 # choose pairs
 pairs = list(combinations(range(params["nsample"]), 2))
 random.seed(42)
-pairs_sample = random.sample(pairs, args.num_pairs)
+random_pair_indices = random.sample(range(len(pairs)), args.num_pairs)
 
 # compute
 clonal_tmrca = []
-for pair in pairs_sample:
-    subtree = mts.simplify(pair)
+for pair_index in random_pair_indices:
+    subtree = mts.simplify(pairs[pair_index])
     tmrca_values = {}
     for tree in subtree.trees():
         tree_tmrca = tree.tmrca(0, 1)
