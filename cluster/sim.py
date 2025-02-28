@@ -1,4 +1,4 @@
-import re, scipy
+import scipy
 import json, argparse
 import msprime
 
@@ -11,6 +11,7 @@ parser.add_argument('--nsample', type=int, default=50)
 parser.add_argument('--mu', type=float, default=0.0000000006)
 parser.add_argument('--r_m', type=float, default=0.0)
 parser.add_argument('--model', type=str, default="kingman")
+parser.add_argument('--alpha', type=float, default=None)
 parser.add_argument('--pi', type=float, default=0.03)
 
 args = parser.parse_args()
@@ -33,15 +34,14 @@ def n_beta(a, T2):
     """if returns 0, means N is unimportant. if returns inf, means T unattainable with given alpha"""
     return ((T2 * a * scipy.special.beta(2 - a, a)) / ((1 + 1 / (2**(a - 1) * (a - 1)))**a))**(1 / (a - 1))
 
-match = re.match(r"^beta([0-9]*\.[0-9]+)$", args.model)
-
-if match:
-    a = float(match.group(1))
-    model = msprime.BetaCoalescent(alpha=a)
-    Ne = n_beta(a, args.pi/(2*mu))
-elif  args.model == "kingman":
+if args.model == "kingman":
     model = None
     Ne = args.pi/(2*mu)
+
+elif  args.model == "beta":
+    model = msprime.BetaCoalescent(alpha=args.alpha)
+    Ne = n_beta(args.alpha, args.pi/(2*mu))
+
 else:
     raise ValueError(f"Invalid model argument: {args.model}")
 

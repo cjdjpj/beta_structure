@@ -1,6 +1,7 @@
 __pycache__/
 _deprecated/
-runs/
+runs/r*
 .DS_Store
 temp/
 typings/
+presentation/

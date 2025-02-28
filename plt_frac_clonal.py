@@ -30,7 +30,7 @@ print("Mean fraction clonal: ", np.mean(frac_clonal))
 
 ### clonal_interval histogram
 plt.figure(figsize = (9,9))
-plt.title("Fraction of clonal descent between pairs of genomes")
+plt.title("Fraction of clonal descent between pairs of genomes (" + run_index + ")")
 plt.xlabel("Proportion of genome")
 plt.ylabel("Frequency")
 sns.histplot(frac_clonal, stat='probability')
@@ -51,7 +51,7 @@ else:
 # mosaic_since_mrca = most_common_tmrca > tmosaic
 
 plt.figure(figsize = (9,9))
-plt.title("Fraction of clonal interval vs most common T_mrca")
+plt.title(f"Fraction of clonal interval vs most common $T_{{\\text{{mrca}}}}$ (" + run_index + ")")
 plt.xlabel("Proportion of genome")
 plt.ylabel("Generations")
 # sns.scatterplot(x=frac_clonal, y=most_common_tmrca, hue = mosaic_since_mrca)

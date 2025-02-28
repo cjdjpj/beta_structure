@@ -11,7 +11,7 @@ np.set_printoptions(legacy='1.25')
 
 ###
 save_fig = False
-run_index = "r005"
+run_index = "r001"
 ###
 
 input_path = "runs/" + run_index
@@ -25,7 +25,8 @@ with open(input_path + "_dist", "rb") as file:
 
 mts = tskit.load(input_path)
 
-print("Average pi:" + str(sum(distance_list)/len(distance_list)))
+average_divergence = sum(distance_list)/len(distance_list)
+print("Average pi:", average_divergence)
 
 ### ARITY
 tree = next(mts.trees())
@@ -38,11 +39,24 @@ arity.sort(reverse=True)
 print(arity[:(len(arity)//20)])
 
 ### PAIRWISE DISTANCE HISTOGRAM
+def expected_divergence(frac_iden):
+    """
+    Computes expected divergence given frac_iden proportion of genome identical
+    under accumulated transfers model
+    """
+    mu = params["mu"]
+    r_m = params["r_m"]
+    t = params["track_length"]
+    R = r_m * mu * t
+    blk_size = 1000
+    return average_divergence * (1-pow(frac_iden,R/(R+mu*blk_size)))
+
 plt.figure(figsize = (9,9))
 sns.histplot(distance_list, stat='probability', bins=160)
+plt.axvline(x = expected_divergence(0), color = 'red')
 plt.xlabel("Pairwise mean number of nucleotide differences (Nei's pi)")
 plt.ylabel("Frequency")
-plt.title("msprime pairwise diversity histogram")
+plt.title("msprime pairwise diversity histogram (" + run_index + ")")
 if save_fig == True:
     plt.savefig(run_index + "a.png", dpi=300)
 else:
@@ -60,7 +74,7 @@ plt.figure(figsize = (9,9))
 sns.scatterplot(x=pcoa_coords[:, 0], y=pcoa_coords[:, 1])
 plt.xlabel(f"PCA 1 ({pc1_var:.2f}%)")
 plt.ylabel(f"PCA 2 ({pc2_var:.2f}%)")
-plt.title(f"PCoA ({pc1_var+pc2_var:.2f}% variance explained)")
+plt.title(f"PCoA ({pc1_var+pc2_var:.2f}% variance explained) (" + run_index + ")")
 if save_fig == True:
     plt.savefig(run_index + "b.png", dpi=300)
 else:
@@ -76,7 +90,7 @@ sns.barplot(
 plt.xticks(rotation=90)
 plt.ylim(0,1)
 plt.ylabel("Proportion of variance explained")
-plt.title("Proportion of variance explained by PCoA")
+plt.title("Proportion of variance explained by PCoA (" + run_index + ")")
 if save_fig == False:
     plt.show()
 
@@ -89,6 +103,7 @@ plt.figure(figsize=(9, 9))
 sch.dendrogram(Z)
 plt.ylabel("Generations")
 plt.xlabel("Samples")
+plt.title("Pairwise distance average dendrogram (" + run_index + ")")
 plt.xticks([])
 if save_fig == True:
     plt.savefig(run_index + "c.png", dpi=300)

@@ -46,18 +46,17 @@ adjusted_null_distance_list = null_distance_list[random_pair_indices]
 sns.scatterplot(y=adjusted_null_distance_list, x=null_frac_iden_blk, color = "grey")
 
 ### NULL LINE
-n_x = np.linspace(0, 1, 1000)
+n_x = np.linspace(1e-10, 1, 1000)
 n_y = -1/blk_size * np.log(n_x)
 plt.plot(n_x, n_y, color='grey')
 
 ### RECOMBINANT LINE
 mu = params["mu"]
 r_m = params["r_m"]
-l = params["length"]
 t = params["track_length"]
 R = r_m * mu * t
 
-r_x = np.linspace(0, 1, 1000)
+r_x = np.linspace(1e-10, 1, 1000)
 r_y = average_divergence * (1-pow(r_x,R/(R+mu*blk_size)))
 
 plt.plot(r_x, r_y, color='red')
@@ -66,6 +65,7 @@ adjusted_distance_list = distance_list[random_pair_indices]
 sns.scatterplot(y=adjusted_distance_list, x=frac_iden_blk)
 plt.xlabel("Proportion of 1kb sequence blocks identical")
 plt.ylabel("Pairwise mean number of nucleotide differences (Nei's pi)")
+plt.title("Fraction of identical blocks vs divergence (" + run_index + ")")
 if save_fig == True:
     plt.savefig(run_index + "d.png", dpi=300)
 else:
