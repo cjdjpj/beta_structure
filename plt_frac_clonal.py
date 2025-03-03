@@ -43,7 +43,6 @@ plt.xlim(0,1)
 plt.title(f"Fraction of clonal interval vs most common $T_{{\\text{{mrca}}}}$ (" + run_index + ")")
 plt.xlabel("Proportion of genome")
 plt.ylabel("Generations")
-# sns.scatterplot(x=frac_clonal, y=most_common_tmrca, hue = mosaic_since_mrca)
 sns.scatterplot(x=frac_clonal, y=most_common_tmrca)
 
 if save_fig == True:
