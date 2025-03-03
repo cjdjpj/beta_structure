@@ -2,8 +2,6 @@ import json
 import pickle
 import seaborn as sns
 import matplotlib.pyplot as plt
-import numpy as np
-np.set_printoptions(legacy='1.25')
 
 ###
 save_fig = False
@@ -23,29 +21,22 @@ with open(input_path + "_dist", "rb") as file:
     distance_list = pickle.load(file)
 
 frac_clonal, most_common_tmrca = zip(*clonal_tmrca)
-frac_clonal = np.array(frac_clonal)
-most_common_tmrca = np.array(most_common_tmrca)
 
-### clonal_interval histogram
-plt.figure(figsize = (9,9))
-plt.title("Fraction of clonal descent between pairs of genomes (" + run_index + ")")
-plt.xlabel("Proportion of genome")
-plt.ylabel("Frequency")
-sns.histplot(frac_clonal, stat='probability')
+g = sns.jointplot(
+    x=frac_clonal, 
+    y=most_common_tmrca, 
+    height=9, 
+    space=0,
+    xlim=(0,1),
+    marginal_kws={"bins": 160}
+)
 
-if save_fig == True:
-    plt.savefig(run_index + "e.png", dpi=300)
-else:
-    plt.show()
-
-plt.figure(figsize = (9,9))
-plt.xlim(0,1)
-plt.title(f"Fraction of clonal interval vs most common $T_{{\\text{{mrca}}}}$ (" + run_index + ")")
-plt.xlabel("Proportion of genome")
-plt.ylabel("Generations")
-sns.scatterplot(x=frac_clonal, y=most_common_tmrca)
+## labels
+g.set_axis_labels("Proportion of genome", "Generations", fontsize=12)
+g.figure.suptitle(f"Fraction of clonal interval vs most common $T_{{\\text{{mrca}}}}$ (" + run_index + ")")
 
 if save_fig == True:
-    plt.savefig(run_index + "f.png", dpi=300)
+    g.figure.savefig(run_index + "e.png", dpi=300, bbox_inches="tight")
 else:
+    plt.subplots_adjust(bottom=0.1, left=0.1)
     plt.show()

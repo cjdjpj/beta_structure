@@ -79,8 +79,7 @@ plt.xticks(rotation=90)
 plt.ylim(0,1)
 plt.ylabel("Proportion of variance explained")
 plt.title("Proportion of variance explained by PCoA (" + run_index + ")")
-if save_fig == False:
-    plt.show()
+plt.show()
 
 ### PAIRWISE DISTANCE DENDROGRAM
 Z = sch.linkage(distance_list, method='average')

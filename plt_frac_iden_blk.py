@@ -25,15 +25,10 @@ with open(input_path + "_dist", "rb") as file:
     distance_list = pickle.load(file)
 
 average_divergence = sum(distance_list)/len(distance_list)
-print("Average pi:" + str(average_divergence))
+print("Average pi:", average_divergence)
 
 random.seed(42)
 random_pair_indices = random.sample(range(math.comb(params["nsample"], 2)), len(frac_iden_blk))
-
-### LIU & GOOD PLOT
-plt.figure(figsize = (9,9))
-plt.ylim(0, 0.05)
-plt.xlim(0, 1)
 
 ### NULL POINTS
 null_index = "r001"
@@ -42,38 +37,49 @@ with open(null_path + "_frac_iden_blk", "rb") as file:
     null_frac_iden_blk = pickle.load(file)
 with open(null_path + "_dist", "rb") as file:
     null_distance_list = pickle.load(file)
-adjusted_null_distance_list = null_distance_list[random_pair_indices]
-sns.scatterplot(y=adjusted_null_distance_list, x=null_frac_iden_blk, color = "grey")
 
-### NULL LINE
+adjusted_distance_list = distance_list[random_pair_indices]
+adjusted_null_distance_list = null_distance_list[random_pair_indices]
+
+## JOINT PLOT
+g = sns.jointplot(
+    x=frac_iden_blk, 
+    y=adjusted_distance_list, 
+    height=9, 
+    space=0,
+    xlim=(0,1),
+    ylim=(0,0.05),
+    marginal_kws={"bins": 160}
+)
+
+## NULL POINTS
+sns.scatterplot(x=null_frac_iden_blk, y=adjusted_null_distance_list, color='grey')
+
+## NULL LINE
 n_x = np.linspace(1e-10, 1, 1000)
 n_y = -1/blk_size * np.log(n_x)
-plt.plot(n_x, n_y, color='grey')
+g.ax_joint.plot(n_x, n_y, color='grey', linestyle='--')
 
-### RECOMBINANT LINE
+## RECOMBINANT LINE
 def expected_divergence(frac_iden):
-    """
-    Computes expected divergence given frac_iden proportion of genome identical
-    under accumulated transfers model
-    """
     mu = params["mu"]
     r_m = params["r_m"]
     t = params["track_length"]
     R = r_m * mu * t
-    blk_size = 1000
-    return average_divergence * (1-pow(frac_iden,R/(R+mu*blk_size)))
+    return average_divergence * (1 - pow(frac_iden, R / (R + mu * blk_size)))
 
 r_x = np.linspace(1e-10, 1, 1000)
 r_y = expected_divergence(r_x)
+g.ax_joint.plot(r_x, r_y, color='red', linestyle='--')
 
-plt.plot(r_x, r_y, color='red')
+## labels
+g.set_axis_labels("Proportion of 1kb sequence blocks identical", 
+                  "Pairwise mean number of nucleotide differences (Nei's pi)", 
+                  fontsize=12)
+g.figure.suptitle(f"Fraction of identical blocks vs divergence ({run_index})")
 
-adjusted_distance_list = distance_list[random_pair_indices]
-sns.scatterplot(y=adjusted_distance_list, x=frac_iden_blk)
-plt.xlabel("Proportion of 1kb sequence blocks identical")
-plt.ylabel("Pairwise mean number of nucleotide differences (Nei's pi)")
-plt.title("Fraction of identical blocks vs divergence (" + run_index + ")")
-if save_fig == True:
-    plt.savefig(run_index + "d.png", dpi=300)
+if save_fig:
+    g.figure.savefig(run_index + "d.png", dpi=300, bbox_inches="tight")
 else:
+    plt.subplots_adjust(bottom=0.1, left=0.1)
     plt.show()
