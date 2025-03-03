@@ -39,21 +39,9 @@ arity.sort(reverse=True)
 print(arity[:(len(arity)//20)])
 
 ### PAIRWISE DISTANCE HISTOGRAM
-def expected_divergence(frac_iden):
-    """
-    Computes expected divergence given frac_iden proportion of genome identical
-    under accumulated transfers model
-    """
-    mu = params["mu"]
-    r_m = params["r_m"]
-    t = params["track_length"]
-    R = r_m * mu * t
-    blk_size = 1000
-    return average_divergence * (1-pow(frac_iden,R/(R+mu*blk_size)))
-
 plt.figure(figsize = (9,9))
 sns.histplot(distance_list, stat='probability', bins=160)
-plt.axvline(x = expected_divergence(0), color = 'red')
+plt.axvline(x = average_divergence, color = 'red')
 plt.xlabel("Pairwise mean number of nucleotide differences (Nei's pi)")
 plt.ylabel("Frequency")
 plt.title("msprime pairwise diversity histogram (" + run_index + ")")

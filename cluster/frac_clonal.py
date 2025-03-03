@@ -8,7 +8,7 @@ from itertools import combinations
 parser = argparse.ArgumentParser(
                     prog='frac_clonal')
 parser.add_argument('--input', type=str, default="output")
-parser.add_argument('--num_pairs', type=int, default=50)
+parser.add_argument('--num_pairs', type=int, default=1000)
 
 args = parser.parse_args()
 
@@ -25,10 +25,10 @@ random_pair_indices = random.sample(range(len(pairs)), args.num_pairs)
 # compute
 clonal_tmrca = []
 for pair_index in random_pair_indices:
-    subtree = mts.simplify(pairs[pair_index])
+    i, j = pairs[pair_index]
     tmrca_values = {}
-    for tree in subtree.trees():
-        tree_tmrca = tree.tmrca(0, 1)
+    for tree in mts.trees():
+        tree_tmrca = tree.tmrca(i, j)
         tmrca_values[tree_tmrca] = tmrca_values.get(tree_tmrca, 0) + tree.interval.span
     most_common_tmrca = max(tmrca_values, key = tmrca_values.get)
     clonal_interval = tmrca_values[most_common_tmrca]

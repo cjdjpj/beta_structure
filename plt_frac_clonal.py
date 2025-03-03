@@ -26,8 +26,6 @@ frac_clonal, most_common_tmrca = zip(*clonal_tmrca)
 frac_clonal = np.array(frac_clonal)
 most_common_tmrca = np.array(most_common_tmrca)
 
-print("Mean fraction clonal: ", np.mean(frac_clonal))
-
 ### clonal_interval histogram
 plt.figure(figsize = (9,9))
 plt.title("Fraction of clonal descent between pairs of genomes (" + run_index + ")")
@@ -40,17 +38,8 @@ if save_fig == True:
 else:
     plt.show()
 
-### frac_clonal vs most_common_tmrca colored if fully overwritten since mrca
-# tmosaic = 3466/(params["r_m"] * params["mu"] * params["length"])
-# print("Tmosaic:    ", tmosaic)
-# print("Max Tmrca:  ", np.max(most_common_tmrca))
-# print("Mean Tmrca: ", np.mean(most_common_tmrca))
-# print("Min Tmrca:  ", np.min(most_common_tmrca))
-#
-# mosaic_since_mrca = np.logical_or(most_common_tmrca > tmosaic, frac_clonal < 0.02)
-# mosaic_since_mrca = most_common_tmrca > tmosaic
-
 plt.figure(figsize = (9,9))
+plt.xlim(0,1)
 plt.title(f"Fraction of clonal interval vs most common $T_{{\\text{{mrca}}}}$ (" + run_index + ")")
 plt.xlabel("Proportion of genome")
 plt.ylabel("Generations")

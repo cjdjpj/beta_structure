@@ -51,13 +51,20 @@ n_y = -1/blk_size * np.log(n_x)
 plt.plot(n_x, n_y, color='grey')
 
 ### RECOMBINANT LINE
-mu = params["mu"]
-r_m = params["r_m"]
-t = params["track_length"]
-R = r_m * mu * t
+def expected_divergence(frac_iden):
+    """
+    Computes expected divergence given frac_iden proportion of genome identical
+    under accumulated transfers model
+    """
+    mu = params["mu"]
+    r_m = params["r_m"]
+    t = params["track_length"]
+    R = r_m * mu * t
+    blk_size = 1000
+    return average_divergence * (1-pow(frac_iden,R/(R+mu*blk_size)))
 
 r_x = np.linspace(1e-10, 1, 1000)
-r_y = average_divergence * (1-pow(r_x,R/(R+mu*blk_size)))
+r_y = expected_divergence(r_x)
 
 plt.plot(r_x, r_y, color='red')
 
