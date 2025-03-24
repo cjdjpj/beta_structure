@@ -19,10 +19,10 @@ with open(args.input + ".json", "r") as file:
 pairs = list(combinations(range(params["nsample"]), 2))
 
 # compute
-distance_list = mts.diversity(pairs, mode='site')
+dist = mts.diversity(pairs, mode='site')
 
 # dump to file
 with open(args.input + "_dist", 'wb') as file:
-    pickle.dump(distance_list, file)
+    pickle.dump(dist, file)
 
 print("---distance matrix computed---")

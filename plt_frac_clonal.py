@@ -1,5 +1,5 @@
-import json
-import pickle
+import numpy as np
+import json, pickle
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -18,9 +18,11 @@ with open(input_path + "_frac_clonal", "rb") as file:
     clonal_tmrca = pickle.load(file)
 
 with open(input_path + "_dist", "rb") as file:
-    distance_list = pickle.load(file)
+    dist = pickle.load(file)
 
 frac_clonal, most_common_tmrca = zip(*clonal_tmrca)
+avg_dist = np.mean(dist)
+average_tmrca = avg_dist/params["mu"]/2
 
 g = sns.jointplot(
     x=frac_clonal, 
@@ -30,6 +32,8 @@ g = sns.jointplot(
     xlim=(0,1),
     marginal_kws={"bins": 160}
 )
+
+plt.axhline(y=average_tmrca, color='red')
 
 ## labels
 g.set_axis_labels("Proportion of genome", "Generations", fontsize=12)

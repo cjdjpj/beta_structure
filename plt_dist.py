@@ -1,10 +1,8 @@
-import tskit
-import json
-import pickle
+import numpy as np
+import tskit, json, pickle 
 import seaborn as sns
 import matplotlib.pyplot as plt
 import scipy.cluster.hierarchy as sch
-import numpy as np
 from scipy.spatial.distance import squareform
 from skbio.stats.ordination import pcoa
 np.set_printoptions(legacy='1.25')
@@ -18,15 +16,14 @@ input_path = "runs/" + run_index
 
 with open(input_path + ".json", "r") as file:
     params = json.load(file)
-    print(json.dumps(params, indent = 4))
+print(json.dumps(params, indent = 4))
 
 with open(input_path + "_dist", "rb") as file:
-    distance_list = pickle.load(file)
+    dist = pickle.load(file)
+avg_dist = np.mean(dist)
+print("Average pi:", avg_dist)
 
 mts = tskit.load(input_path)
-
-average_divergence = sum(distance_list)/len(distance_list)
-print("Average pi:", average_divergence)
 
 ### ARITY
 tree = next(mts.trees())
@@ -40,8 +37,8 @@ print(arity[:(len(arity)//20)])
 
 ### PAIRWISE DISTANCE HISTOGRAM
 plt.figure(figsize = (9,9))
-sns.histplot(distance_list, stat='probability', bins=160)
-plt.axvline(x = average_divergence, color = 'red')
+sns.histplot(dist, stat='probability', bins=160)
+plt.axvline(x = avg_dist, color = 'red')
 plt.xlabel("Pairwise mean number of nucleotide differences (Nei's pi)")
 plt.ylabel("Frequency")
 plt.title("msprime pairwise diversity histogram (" + run_index + ")")
@@ -51,8 +48,8 @@ else:
     plt.show()
 
 ### PCA
-distance_matrix = squareform(distance_list)
-pcoa_results = pcoa(distance_matrix)
+dist_matrix = squareform(dist)
+pcoa_results = pcoa(dist_matrix)
 pcoa_coords = pcoa_results.samples[['PC1', 'PC2']].values
 variance_explained = pcoa_results.proportion_explained
 pc1_var = variance_explained["PC1"]*100
@@ -82,7 +79,7 @@ plt.title("Proportion of variance explained by PCoA (" + run_index + ")")
 plt.show()
 
 ### PAIRWISE DISTANCE DENDROGRAM
-Z = sch.linkage(distance_list, method='average')
+Z = sch.linkage(dist, method='average')
 mu = params["mu"]
 Z[:, 2] = Z[:, 2] / mu
 
