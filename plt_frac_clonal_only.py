@@ -1,10 +1,10 @@
 import numpy as np
-import json
-import pickle
+import json, pickle
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 ###
+save_fig = False
 run_index = "r001"
 ###
 
@@ -12,7 +12,7 @@ input_path = "runs/" + run_index
 
 with open(input_path + ".json", "r") as file:
     params = json.load(file)
-print(json.dumps(params, indent = 4))
+    print(json.dumps(params, indent = 4))
 
 with open(input_path + "_frac_clonal", "rb") as file:
     clonal_tmrca = pickle.load(file)
@@ -21,21 +21,18 @@ with open(input_path + "_dist", "rb") as file:
     dist = pickle.load(file)
 
 frac_clonal, most_common_tmrca = zip(*clonal_tmrca)
-frac_clonal = np.array(frac_clonal)
-most_common_tmrca = np.array(most_common_tmrca)
-
 avg_dist = np.mean(dist)
-avg_tmrca = avg_dist/(params["mu"]*2)
+avg_tmrca = avg_dist/params["mu"]/2
 avg_clonal_tmrca = np.mean(most_common_tmrca)
 avg_recombinant_tmrca = avg_tmrca*2 - np.mean(frac_clonal) * avg_clonal_tmrca
 
-predicted_dist = np.multiply(frac_clonal, most_common_tmrca)+ (1-frac_clonal) * avg_recombinant_tmrca
-
 plt.figure(figsize = (9,9))
-sns.histplot(predicted_dist, stat='probability', bins=160)
-plt.axvline(x = avg_tmrca, color = 'red', alpha = 0.3, label = f"Average $T_{{\\text{{mrca}}}}$")
-plt.xlabel(f"Predicted $T_{{\\text{{mrca}}}}$")
+sns.histplot(frac_clonal, stat="probability", bins = 160)
 plt.ylabel("Frequency")
-plt.title(f"Predicted $T_{{\\text{{mrca}}}}$ histogram (" + run_index + ")")
-plt.legend()
-plt.savefig("r022_rebuilding_hist.png", dpi=300)
+plt.xlabel("Fraction of genome clonal")
+plt.xlim(-0.03, 1.05)
+plt.title("msprime fraction clonal (" + run_index + ")")
+if save_fig:
+    plt.savefig("../figures/" + run_index + "v.png", dpi=300)
+else:
+    plt.show()

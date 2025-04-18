@@ -5,8 +5,10 @@ import json
 import pickle
 import seaborn as sns
 import matplotlib.pyplot as plt
+np.set_printoptions(legacy='1.25')
 
 ###
+save_fig = False
 run_index = "r001"
 ###
 
@@ -30,13 +32,16 @@ random.seed(42)
 random_pair_indices = random.sample(range(math.comb(params["nsample"], 2)), len(frac_clonal))
 
 adj_dist = dist[random_pair_indices]
-avg_tmrca = adj_dist/(params["mu"]*2)
+adj_tmrca = adj_dist/(params["mu"]*2)
 
-recombinant_tmrca = (avg_tmrca - np.multiply(frac_clonal, most_common_tmrca))/(1-frac_clonal)
+recombinant_tmrca = (adj_tmrca - np.multiply(frac_clonal, most_common_tmrca))/(1-frac_clonal)
 
 plt.figure(figsize = (9,9))
 sns.histplot(recombinant_tmrca, stat='probability', bins=160)
 plt.xlabel(f"$T_{{\\text{{mrca}}}}$ of recombined regions")
 plt.ylabel("Frequency")
 plt.title(f"Recombinant segments $T_{{\\text{{mrca}}}}$ histogram (" + run_index + ")")
-plt.show()
+if save_fig:
+    plt.savefig(run_index + "_recomb_segs", dpi=300)
+else:
+    plt.show()

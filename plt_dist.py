@@ -33,17 +33,18 @@ arity = [
 
 arity.sort(reverse=True)
 
-print(arity[:(len(arity)//20)])
+print(arity[:(int(len(arity)*0.05))])
 
 ### PAIRWISE DISTANCE HISTOGRAM
 plt.figure(figsize = (9,9))
 sns.histplot(dist, stat='probability', bins=160)
-plt.axvline(x = avg_dist, color = 'red')
+plt.axvline(x = avg_dist, color = 'red', alpha = 0.3, label = f"Average $\\pi$")
 plt.xlabel("Pairwise mean number of nucleotide differences (Nei's pi)")
 plt.ylabel("Frequency")
 plt.title("msprime pairwise diversity histogram (" + run_index + ")")
-if save_fig == True:
-    plt.savefig(run_index + "a.png", dpi=300)
+plt.legend()
+if save_fig:
+    plt.savefig("../figures/" + run_index + "a.png", dpi=300)
 else:
     plt.show()
 
