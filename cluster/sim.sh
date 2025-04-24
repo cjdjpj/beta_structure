@@ -8,8 +8,8 @@ srun python sim.py\
     --output "runs/r001"\
     --length 5000000\
     --track_length 5000\
-    --nsample 500\
-    --mu 0.0000000006\
+    --nsample 100\
+    --mu 0.0000006\
     --r_m 0.0\
     --model "kingman"\
     --pi 0.03\

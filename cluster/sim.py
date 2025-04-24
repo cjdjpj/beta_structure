@@ -7,9 +7,9 @@ parser = argparse.ArgumentParser(
 parser.add_argument('--output', type=str, default="output")
 parser.add_argument('--length', type=int, default=5000000)
 parser.add_argument('--track_length', type=int, default=5000)
-parser.add_argument('--nsample', type=int, default=500)
-parser.add_argument('--mu', type=float, default=0.0000000006)
-parser.add_argument('--r_m', type=float, default=0.0)
+parser.add_argument('--nsample', type=int, default=100)
+parser.add_argument('--mu', type=float, default=0.0000006)
+parser.add_argument('--r_m', type=float, default=0.00)
 parser.add_argument('--model', type=str, default="kingman")
 parser.add_argument('--alpha', type=float, default=None)
 parser.add_argument('--pi', type=float, default=0.03)
@@ -55,7 +55,10 @@ ts = msprime.sim_ancestry(nsample,
                           sequence_length=l,
                           gene_conversion_rate=r,
                           gene_conversion_tract_length=t,
-                          record_provenance = True,
+                          additional_nodes=(
+                              msprime.NodeType.GENE_CONVERSION
+                          ),
+                          coalescing_segments_only=False,
                           )
 
 print("---ancestry simulation done---")

@@ -1,5 +1,3 @@
-import math
-import random
 import numpy as np
 import json
 import pickle
@@ -28,13 +26,9 @@ frac_clonal, most_common_tmrca = zip(*clonal_tmrca)
 frac_clonal = np.array(frac_clonal)
 most_common_tmrca = np.array(most_common_tmrca)
 
-random.seed(42)
-random_pair_indices = random.sample(range(math.comb(params["nsample"], 2)), len(frac_clonal))
+tmrca = dist/(params["mu"]*2)
 
-adj_dist = dist[random_pair_indices]
-adj_tmrca = adj_dist/(params["mu"]*2)
-
-recombinant_tmrca = (adj_tmrca - np.multiply(frac_clonal, most_common_tmrca))/(1-frac_clonal)
+recombinant_tmrca = (tmrca - np.multiply(frac_clonal, most_common_tmrca))/(1-frac_clonal)
 
 plt.figure(figsize = (9,9))
 sns.histplot(recombinant_tmrca, stat='probability', bins=160)

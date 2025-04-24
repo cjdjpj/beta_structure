@@ -1,5 +1,3 @@
-import math
-import random
 import json
 import pickle
 import numpy as np
@@ -27,9 +25,6 @@ with open(input_path + "_dist", "rb") as file:
 avg_dist = np.mean(dist)
 print("Average pi:", avg_dist)
 
-random.seed(42)
-random_pair_indices = random.sample(range(math.comb(params["nsample"], 2)), len(frac_iden_blk))
-
 ### NULL POINTS
 null_index = "r001"
 null_path = "runs/" + null_index
@@ -38,13 +33,10 @@ with open(null_path + "_frac_iden_blk", "rb") as file:
 with open(null_path + "_dist", "rb") as file:
     null_dist = pickle.load(file)
 
-adj_dist = dist[random_pair_indices]
-adj_null_dist = null_dist[random_pair_indices]
-
 ## JOINT PLOT
 g = sns.jointplot(
     x=frac_iden_blk, 
-    y=adj_dist, 
+    y=dist, 
     height=9, 
     space=0,
     xlim=(0,1),
@@ -52,7 +44,7 @@ g = sns.jointplot(
 )
 
 ## NULL POINTS
-sns.scatterplot(x=null_frac_iden_blk, y=adj_null_dist, color='grey')
+sns.scatterplot(x=null_frac_iden_blk, y=null_dist, color='grey')
 
 ## NULL LINE
 n_x = np.linspace(1e-10, 1, 1000)
@@ -78,7 +70,7 @@ g.set_axis_labels("Proportion of 1kb sequence blocks identical",
 g.figure.suptitle(f"Fraction of identical blocks vs distance ({run_index})")
 
 if save_fig:
-    g.figure.savefig(run_index + "d.png", dpi=300, bbox_inches="tight")
+    g.figure.savefig("../figures/" + run_index + "d.png", dpi=300, bbox_inches="tight")
 else:
     plt.subplots_adjust(bottom=0.1, left=0.1)
     plt.show()

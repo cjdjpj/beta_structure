@@ -26,7 +26,7 @@ for filename in runs_json:
         # add dict
         json_data.append(data)
 
-keys = ['output', 'model', 'alpha', 'r_m', 'Ne', "_dist", "_iden_blk", "_clonal", 'pi', 'mu', 'length', 'track_length', 'nsample']
+keys = ['output', 'model', 'alpha', 'r_m', "_dist", "_iden_blk", "_clonal", 'pi', 'mu', 'length', 'track_length', 'nsample']
 
 with open("catalogue.csv", "w", newline="") as f:
     writer = csv.DictWriter(f, fieldnames=keys)

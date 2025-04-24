@@ -1,7 +1,5 @@
-import json
 import tskit
 import pickle
-import random
 import argparse
 import numpy as np
 from itertools import combinations
@@ -9,20 +7,14 @@ from itertools import combinations
 parser = argparse.ArgumentParser(
                     prog='frac_iden_blk')
 parser.add_argument('--input', type=str, default="output")
-parser.add_argument('--num_pairs', type=int, default=0)
 parser.add_argument('--blk_size', type=int, default=10)
 
 args = parser.parse_args()
 
-# open files
+# open tree sequence
 mts = tskit.load(args.input)
-with open(args.input + ".json", "r") as file:
-    params = json.load(file)
 
-# choose pairs
-pairs = list(combinations(range(params["nsample"]), 2))
-random.seed(42)
-random_pair_indices = random.sample(range(len(pairs)), args.num_pairs)
+pairs = list(combinations(range(mts.num_samples), 2))
 
 # compute
 sites = [int(site.position) for site in mts.sites()]
@@ -43,8 +35,7 @@ def prop_identical_blk(s1, s2):
 
 frac_iden_blk= []
 genotypes = mts.genotype_matrix()
-for pair_index in random_pair_indices:
-    (i,j) = pairs[pair_index]
+for (i,j) in pairs:
     frac_iden_blk.append(prop_identical_blk(genotypes[:, i], genotypes[:, j]))
 
 with open(args.input + "_frac_iden_blk", 'wb') as file:

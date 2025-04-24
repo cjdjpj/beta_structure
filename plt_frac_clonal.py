@@ -58,7 +58,3 @@ if save_fig:
 else:
     plt.subplots_adjust(bottom=0.1, left=0.1)
     plt.show()
-
-plt.figure(figsize = (9,9))
-sns.histplot(frac_clonal, bins = 160)
-plt.show()

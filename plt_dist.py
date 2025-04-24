@@ -48,50 +48,50 @@ if save_fig:
 else:
     plt.show()
 
-### PCA
-dist_matrix = squareform(dist)
-pcoa_results = pcoa(dist_matrix)
-pcoa_coords = pcoa_results.samples[['PC1', 'PC2']].values
-variance_explained = pcoa_results.proportion_explained
-pc1_var = variance_explained["PC1"]*100
-pc2_var = variance_explained["PC2"]*100
-
-plt.figure(figsize = (9,9))
-sns.scatterplot(x=pcoa_coords[:, 0], y=pcoa_coords[:, 1])
-plt.xlabel(f"PCA 1 ({pc1_var:.2f}%)")
-plt.ylabel(f"PCA 2 ({pc2_var:.2f}%)")
-plt.title(f"PCoA ({pc1_var+pc2_var:.2f}% variance explained) (" + run_index + ")")
-if save_fig == True:
-    plt.savefig(run_index + "b.png", dpi=300)
-else:
-    plt.show()
-
-### PCA components
-components = 8
-plt.figure(figsize = (9,9))
-sns.barplot(
-    x=[f"PC{i+1}" for i in range(components)], 
-    y=variance_explained.iloc[:components], 
-)
-plt.xticks(rotation=90)
-plt.ylim(0,1)
-plt.ylabel("Proportion of variance explained")
-plt.title("Proportion of variance explained by PCoA (" + run_index + ")")
-plt.show()
-
-### PAIRWISE DISTANCE DENDROGRAM
-Z = sch.linkage(dist, method='average')
-mu = params["mu"]
-Z[:, 2] = Z[:, 2] / mu
-
-plt.figure(figsize=(9, 9))
-sch.dendrogram(Z)
-plt.ylabel("Generations")
-plt.xlabel("Samples")
-plt.title("Pairwise distance average dendrogram (" + run_index + ")")
-plt.xticks([])
-if save_fig == True:
-    plt.savefig(run_index + "c.png", dpi=300)
-else:
-    plt.show()
-
+# ### PCA
+# dist_matrix = squareform(dist)
+# pcoa_results = pcoa(dist_matrix)
+# pcoa_coords = pcoa_results.samples[['PC1', 'PC2']].values
+# variance_explained = pcoa_results.proportion_explained
+# pc1_var = variance_explained["PC1"]*100
+# pc2_var = variance_explained["PC2"]*100
+#
+# plt.figure(figsize = (9,9))
+# sns.scatterplot(x=pcoa_coords[:, 0], y=pcoa_coords[:, 1])
+# plt.xlabel(f"PCA 1 ({pc1_var:.2f}%)")
+# plt.ylabel(f"PCA 2 ({pc2_var:.2f}%)")
+# plt.title(f"PCoA ({pc1_var+pc2_var:.2f}% variance explained) (" + run_index + ")")
+# if save_fig == True:
+#     plt.savefig(run_index + "b.png", dpi=300)
+# else:
+#     plt.show()
+#
+# ### PCA components
+# components = 8
+# plt.figure(figsize = (9,9))
+# sns.barplot(
+#     x=[f"PC{i+1}" for i in range(components)], 
+#     y=variance_explained.iloc[:components], 
+# )
+# plt.xticks(rotation=90)
+# plt.ylim(0,1)
+# plt.ylabel("Proportion of variance explained")
+# plt.title("Proportion of variance explained by PCoA (" + run_index + ")")
+# plt.show()
+#
+# ### PAIRWISE DISTANCE DENDROGRAM
+# Z = sch.linkage(dist, method='average')
+# mu = params["mu"]
+# Z[:, 2] = Z[:, 2] / mu
+#
+# plt.figure(figsize=(9, 9))
+# sch.dendrogram(Z)
+# plt.ylabel("Generations")
+# plt.xlabel("Samples")
+# plt.title("Pairwise distance average dendrogram (" + run_index + ")")
+# plt.xticks([])
+# if save_fig == True:
+#     plt.savefig(run_index + "c.png", dpi=300)
+# else:
+#     plt.show()
+#
