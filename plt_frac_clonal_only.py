@@ -19,8 +19,8 @@ sns.histplot(frac_clonal, stat="probability", bins = 160)
 plt.ylabel("Frequency")
 plt.xlabel("Fraction of genome clonal")
 plt.xlim(-0.03, 1.05)
-plt.title("msprime fraction clonal (" + run_index + ")")
+plt.title("msprime fraction inferred clonal (" + run_index + ")")
 if save_fig:
-    plt.savefig("../figures/" + run_index + "v.png", dpi=300)
+    plt.savefig("../figures/" + run_index + "e.png", dpi=300)
 else:
     plt.show()

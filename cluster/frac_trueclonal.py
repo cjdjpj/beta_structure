@@ -23,7 +23,7 @@ gc_nodes = [u.id for u in mts.nodes() if u.flags == GENE_CONVERSION_FLAG]
 real_gc = set(gc_nodes[1::2])
 
 num_pairs = math.comb(n, 2)
-span = np.zeros(num_pairs, dtype=float)
+clonal_interval = np.zeros(num_pairs, dtype=float)
 tmrca = np.full(num_pairs, None, dtype=object)
 
 # for each marginal tree, find components when you "remove" real_gc nodes
@@ -49,11 +49,11 @@ for tree in mts.trees():
         sample_nodes = [g[i] for i in comp if tree.is_sample(g[i])]
         for i, j in combinations(sorted(sample_nodes), 2):
             pair_index = int(j - i - 1 + n * i - (i * (i + 1)) // 2)
-            span[pair_index] += tree.span
+            clonal_interval[pair_index] += tree.span
             tmrca[pair_index] = tree.tmrca(i,j)
 
 
-clonal_tmrca = list(zip(span/L, tmrca))
+clonal_tmrca = list(zip(clonal_interval/L, tmrca))
 
 with open(args.input + "_frac_trueclonal", 'wb') as file:
     pickle.dump(clonal_tmrca, file)

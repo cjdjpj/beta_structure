@@ -70,7 +70,7 @@ g.set_axis_labels("Proportion of 1kb sequence blocks identical",
 g.figure.suptitle(f"Fraction of identical blocks vs distance ({run_index})")
 
 if save_fig:
-    g.figure.savefig("../figures/" + run_index + "d.png", dpi=300, bbox_inches="tight")
+    g.figure.savefig("../figures/" + run_index + "f.png", dpi=300, bbox_inches="tight")
 else:
     plt.subplots_adjust(bottom=0.1, left=0.1)
     plt.show()
