@@ -1,11 +1,12 @@
 import numpy as np
-import json, pickle
+import json
+import pickle
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 ###
 save_fig = False
-run_index = "r003"
+run_index = "r001"
 ###
 
 input_path = "runs/" + run_index
@@ -37,11 +38,11 @@ x = np.linspace(0, 1, 100)
 y = np.log(x)/(-2*R)
 
 ax = g.ax_joint
-ax.plot(x, y, color='blue', linestyle = "dashed", alpha = 0.3, label=f'$e^{{-2RT}}$')
+ax.plot(x, y, color='blue', linestyle = "dashed", alpha = 0.3, label='$e^{-2RT}$')
 
 ## labels
 g.set_axis_labels("Proportion of genome", "Generations", fontsize=12)
-g.figure.suptitle(f"Fraction of true clonal interval vs most common $T_{{\\text{{mrca}}}}$ (" + run_index + ")")
+g.figure.suptitle("Fraction of true clonal interval vs most common $T_{\\text{mrca}}$ (" + run_index + ")")
 ax.legend(title="Legend")
 
 if save_fig:

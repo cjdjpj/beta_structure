@@ -1,5 +1,6 @@
 import numpy as np
-import json, pickle
+import json
+import pickle
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -44,13 +45,13 @@ x = np.linspace(0, 1, 100)
 y = np.log(x)/(-2*R)
 
 ax = g.ax_joint
-ax.plot(x, y, color='blue', linestyle = "dashed", alpha = 0.3, label=f'$e^{{-2RT}}$')
+ax.plot(x, y, color='blue', linestyle = "dashed", alpha = 0.3, label='$e^{-2RT}$')
 
-plt.axhline(y=avg_clonal_tmrca, color='purple', alpha = 0.3, label = f"Average clonal $T_{{\\text{{mrca}}}}$")
+plt.axhline(y=avg_clonal_tmrca, color='purple', alpha = 0.3, label = "Average clonal $T_{\\text{mrca}}$")
 
 ## labels
 g.set_axis_labels("Proportion of genome", "Generations", fontsize=12)
-g.figure.suptitle(f"Fraction of inferred clonal interval vs most common $T_{{\\text{{mrca}}}}$ (" + run_index + ")")
+g.figure.suptitle("Fraction of inferred clonal interval vs most common $T_{\\text{mrca}}$ (" + run_index + ")")
 ax.legend(title="Legend")
 
 if save_fig:
