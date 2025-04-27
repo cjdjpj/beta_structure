@@ -1,6 +1,8 @@
 import scipy
-import json, argparse
+import json
+import argparse
 import msprime
+import numpy as np
 
 parser = argparse.ArgumentParser(
                     prog='sim')
