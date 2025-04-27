@@ -41,21 +41,32 @@ r_m = params["r_m"]
 t = params["track_length"]
 R = r_m * mu * t
 
-x = np.linspace(0, 1, 100)
-y = np.log(x)/(-2*R)
-
-ax = g.ax_joint
-ax.plot(x, y, color='blue', linestyle = "dashed", alpha = 0.3, label='$e^{-2RT}$')
+if R != 0:
+    x = np.linspace(1e-3, 1, 100)
+    y = np.log(x)/(-2*R)
+    g.ax_joint.plot(x, y, color='blue', linestyle = "dashed", alpha = 0.3, label='$e^{-2RT}$')
+    g.ax_joint.legend(title="Legend")
 
 plt.axhline(y=avg_clonal_tmrca, color='purple', alpha = 0.3, label = "Average clonal $T_{\\text{mrca}}$")
 
 ## labels
 g.set_axis_labels("Proportion of genome", "Generations", fontsize=12)
 g.figure.suptitle("Fraction of inferred clonal interval vs most common $T_{\\text{mrca}}$ (" + run_index + ")")
-ax.legend(title="Legend")
 
 if save_fig:
     g.figure.savefig("../figures/" + run_index + "d.png", dpi=300, bbox_inches="tight")
 else:
     plt.subplots_adjust(bottom=0.1, left=0.1)
     plt.show()
+
+# ### plot frac_clonal histogram alone
+# plt.figure(figsize = (9,9))
+# sns.histplot(frac_clonal, stat="probability", bins = 160)
+# plt.ylabel("Frequency")
+# plt.xlabel("Fraction of genome clonal")
+# plt.xlim(-0.03, 1.05)
+# plt.title("msprime fraction inferred clonal (" + run_index + ")")
+# if save_fig:
+#     plt.savefig("../figures/" + run_index + "e.png", dpi=300)
+# else:
+#     plt.show()

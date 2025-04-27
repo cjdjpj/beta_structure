@@ -1,6 +1,5 @@
 import numpy as np
 import json
-import tskit
 import pickle 
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -25,21 +24,10 @@ with open(input_path + "_dist", "rb") as file:
 avg_dist = np.mean(dist)
 print("Average pi:", avg_dist)
 
-### ARITY
-mts = tskit.load(input_path)
-tree = next(mts.trees())
-arity = [
-    (tree.num_children(node), int(tree.time(node))) for node in tree.nodes() if tree.num_children(node) > 1
-]
-
-arity.sort(reverse=True)
-
-print(arity[:(int(len(arity)*0.05))])
-
 ### PAIRWISE DISTANCE HISTOGRAM
 plt.figure(figsize = (9,9))
 sns.histplot(dist, stat='probability', bins=160)
-plt.axvline(x = avg_dist, color = 'red', alpha = 0.3, label = "Average $\pi$")
+plt.axvline(x = avg_dist, color = 'red', alpha = 0.3, label = "Average $\\pi$")
 plt.xlabel("Pairwise mean number of nucleotide differences (Nei's pi)")
 plt.ylabel("Frequency")
 plt.title("msprime pairwise diversity histogram (" + run_index + ")")
@@ -48,6 +36,18 @@ if save_fig:
     plt.savefig("../figures/" + run_index + "a.png", dpi=300)
 else:
     plt.show()
+
+# ### ARITY
+# import tskit
+# mts = tskit.load(input_path)
+# tree = next(mts.trees())
+# arity = [
+#     (tree.num_children(node), int(tree.time(node))) for node in tree.nodes() if tree.num_children(node) > 1
+# ]
+#
+# arity.sort(reverse=True)
+#
+# print(arity[:(int(len(arity)*0.05))])
 
 # ### PCA
 # dist_matrix = squareform(dist)

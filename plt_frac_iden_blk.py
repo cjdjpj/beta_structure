@@ -10,7 +10,7 @@ run_index = "r001"
 ###
 
 input_path = "runs/" + run_index
-blk_size = 1000 # for analytical prediction
+blk_size = 500 # for analytical prediction
 
 with open(input_path + ".json", "r") as file:
     params = json.load(file)
@@ -47,7 +47,7 @@ g = sns.jointplot(
 sns.scatterplot(x=null_frac_iden_blk, y=null_dist, color='grey')
 
 ## NULL LINE
-n_x = np.linspace(1e-10, 1, 1000)
+n_x = np.linspace(1e-3, 1, 1000)
 n_y = -1/blk_size * np.log(n_x)
 g.ax_joint.plot(n_x, n_y, color='grey', linestyle='--')
 

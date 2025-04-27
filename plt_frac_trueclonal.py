@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import json
 import pickle
@@ -18,11 +19,14 @@ with open(input_path + ".json", "r") as file:
 with open(input_path + "_frac_trueclonal", "rb") as file:
     trueclonal_tmrca = pickle.load(file)
 
-frac_trueclonal, most_common_tmrca = zip(*trueclonal_tmrca)
+frac_trueclonal, clonal_tmrca = zip(*trueclonal_tmrca)
+
+prop_fully_recombined = sum(x is None for x in clonal_tmrca)/math.comb(params["nsample"], 2) * 100
+print(f"Fully recombined: {prop_fully_recombined:.2f}%")
 
 g = sns.jointplot(
     x=frac_trueclonal, 
-    y=most_common_tmrca, 
+    y=clonal_tmrca, 
     height=9, 
     space=0,
     xlim=(0,1),
@@ -34,16 +38,15 @@ r_m = params["r_m"]
 t = params["track_length"]
 R = r_m * mu * t
 
-x = np.linspace(0, 1, 100)
-y = np.log(x)/(-2*R)
-
-ax = g.ax_joint
-ax.plot(x, y, color='blue', linestyle = "dashed", alpha = 0.3, label='$e^{-2RT}$')
+if R != 0:
+    x = np.linspace(1e-3, 1, 100)
+    y = np.log(x)/(-2*R)
+    g.ax_joint.plot(x, y, color='blue', linestyle = "dashed", alpha = 0.3, label='$e^{-2RT}$')
+    g.ax_joint.legend(title="Legend")
 
 ## labels
 g.set_axis_labels("Proportion of genome", "Generations", fontsize=12)
-g.figure.suptitle("Fraction of true clonal interval vs most common $T_{\\text{mrca}}$ (" + run_index + ")")
-ax.legend(title="Legend")
+g.figure.suptitle("Fraction of true clonal interval vs clonal $T_{\\text{mrca}}$ (" + run_index + ")")
 
 if save_fig:
     g.figure.savefig("../figures/" + run_index + "g.png", dpi=300, bbox_inches="tight")
