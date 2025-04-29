@@ -30,7 +30,7 @@ sns.histplot(dist, stat='probability', bins=160)
 plt.axvline(x = avg_dist, color = 'red', alpha = 0.3, label = "Average $\\pi$")
 plt.xlabel("Pairwise mean number of nucleotide differences (Nei's pi)")
 plt.ylabel("Frequency")
-plt.title("msprime pairwise diversity histogram (" + run_index + ")")
+plt.title("Pairwise diversity histogram (" + run_index + ")")
 plt.legend()
 if save_fig:
     plt.savefig("../figures/" + run_index + "a.png", dpi=300)
@@ -40,14 +40,17 @@ else:
 # ### ARITY
 # import tskit
 # mts = tskit.load(input_path)
-# tree = next(mts.trees())
-# arity = [
-#     (tree.num_children(node), int(tree.time(node))) for node in tree.nodes() if tree.num_children(node) > 1
-# ]
+# max_value = (0, None)
+# for tree in mts.trees():
+#     arity = [
+#         (tree.num_children(node), int(tree.time(node))) for node in tree.nodes() if tree.num_children(node) > 1
+#     ]
+#     max_candidate = max(arity, key=lambda x: x[0])
+#     if max_candidate[0] > max_value[0]:
+#         max_value = max_candidate
+#         print(max_value)
 #
-# arity.sort(reverse=True)
-#
-# print(arity[:(int(len(arity)*0.05))])
+# print(max_value)
 
 # ### PCA
 # dist_matrix = squareform(dist)
