@@ -21,7 +21,7 @@ with open(input_path + "_frac_trueclonal", "rb") as file:
 
 frac_trueclonal, clonal_tmrca = zip(*trueclonal_tmrca)
 
-prop_fully_recombined = sum(x is None for x in clonal_tmrca)/math.comb(params["nsample"], 2) * 100
+prop_fully_recombined = sum(x==0 for x in frac_trueclonal)/math.comb(params["nsample"], 2) * 100
 print(f"Fully recombined: {prop_fully_recombined:.2f}%")
 
 g = sns.jointplot(
@@ -49,7 +49,16 @@ g.set_axis_labels("Proportion of genome", "Generations", fontsize=12)
 g.figure.suptitle("Fraction of true clonal interval vs clonal $T_{\\text{mrca}}$ (" + run_index + ")")
 
 if save_fig:
-    g.figure.savefig("../figures/" + run_index + "g.png", dpi=300, bbox_inches="tight")
+    g.figure.savefig("../figures/" + run_index + "h.png", dpi=300, bbox_inches="tight")
 else:
     plt.subplots_adjust(bottom=0.1, left=0.1)
     plt.show()
+
+# ### plot frac_trueclonal histogram alone
+# plt.figure(figsize = (9,9))
+# sns.histplot(frac_trueclonal, stat="probability", bins = 160)
+# plt.ylabel("Frequency")
+# plt.xlabel("Fraction of genome clonal")
+# plt.xlim(-0.03, 1.05)
+# plt.title("Fraction inferred clonal (" + run_index + ")")
+# plt.show()

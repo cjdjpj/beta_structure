@@ -54,7 +54,7 @@ g.set_axis_labels("Proportion of genome", "Generations", fontsize=12)
 g.figure.suptitle("Fraction of inferred clonal interval vs most common $T_{\\text{mrca}}$ (" + run_index + ")")
 
 if save_fig:
-    g.figure.savefig("../figures/" + run_index + "d.png", dpi=300, bbox_inches="tight")
+    g.figure.savefig("../figures/" + run_index + "e.png", dpi=300, bbox_inches="tight")
 else:
     plt.subplots_adjust(bottom=0.1, left=0.1)
     plt.show()
@@ -65,8 +65,5 @@ else:
 # plt.ylabel("Frequency")
 # plt.xlabel("Fraction of genome clonal")
 # plt.xlim(-0.03, 1.05)
-# plt.title("msprime fraction inferred clonal (" + run_index + ")")
-# if save_fig:
-#     plt.savefig("../figures/" + run_index + "e.png", dpi=300)
-# else:
-#     plt.show()
+# plt.title("Fraction inferred clonal (" + run_index + ")")
+# plt.show()
