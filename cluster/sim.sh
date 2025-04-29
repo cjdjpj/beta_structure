@@ -3,6 +3,7 @@
 #SBATCH --partition=4hrs
 #SBATCH --mem=4G
 #SBATCH --ntasks=1
+#SBATCH --mem=150G
 
 srun python sim.py\
     --output "runs/r001"\

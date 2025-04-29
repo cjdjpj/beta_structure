@@ -3,6 +3,7 @@
 #SBATCH --time=1-00:00:00                    
 #SBATCH --partition=1day
 #SBATCH --ntasks=1
+#SBATCH --mem=150G
 
 srun python dist.py\
     --input "$1"
