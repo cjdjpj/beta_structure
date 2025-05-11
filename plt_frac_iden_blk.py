@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 ###
 save_fig = False
-run_index = "r001"
+run_index = "r015"
 ###
 
 input_path = "runs/" + run_index

@@ -21,13 +21,12 @@ for filename in runs_json:
         # check for stats
         data["_dist"] = os.path.exists(run_index + "_dist")
         data["_iden_blk"] = os.path.exists(run_index + "_frac_iden_blk")
-        data["_clonal"] = os.path.exists(run_index + "_frac_clonal")
-        data["_trueclonal"] = os.path.exists(run_index + "_frac_trueclonal")
+        data["_frac_clonal"] = os.path.exists(run_index + "_frac_trueclonal")
         
         # add dict
         json_data.append(data)
 
-keys = ['output', 'model', 'alpha', 'r_m', "_dist", "_iden_blk", "_trueclonal", "_clonal", 'pi', 'mu', 'length', 'track_length', 'nsample']
+keys = ['output', 'model', 'alpha', 'r_m', "_dist", "_iden_blk", "_frac_clonal", 'pi', 'mu', 'length', 'track_length', 'nsample']
 
 with open("catalogue.csv", "w", newline="") as f:
     writer = csv.DictWriter(f, fieldnames=keys)
