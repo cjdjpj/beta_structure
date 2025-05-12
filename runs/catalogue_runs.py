@@ -21,7 +21,7 @@ for filename in runs_json:
         # check for stats
         data["_dist"] = os.path.exists(run_index + "_dist")
         data["_iden_blk"] = os.path.exists(run_index + "_frac_iden_blk")
-        data["_frac_clonal"] = os.path.exists(run_index + "_frac_trueclonal")
+        data["_frac_clonal"] = os.path.exists(run_index + "_frac_clonal")
         
         # add dict
         json_data.append(data)

@@ -16,16 +16,16 @@ with open(input_path + ".json", "r") as file:
     params = json.load(file)
     print(json.dumps(params, indent = 4))
 
-with open(input_path + "_frac_trueclonal", "rb") as file:
-    trueclonal_tmrca = pickle.load(file)
+with open(input_path + "_frac_clonal", "rb") as file:
+    clonal_tmrca = pickle.load(file)
 
-frac_trueclonal, clonal_tmrca = zip(*trueclonal_tmrca)
+frac_clonal, clonal_tmrca = zip(*clonal_tmrca)
 
-prop_fully_recombined = sum(x==0 for x in frac_trueclonal)/math.comb(params["nsample"], 2) * 100
+prop_fully_recombined = sum(x==0 for x in frac_clonal)/math.comb(params["nsample"], 2) * 100
 print(f"Fully recombined: {prop_fully_recombined:.2f}%")
 
 g = sns.jointplot(
-    x=frac_trueclonal, 
+    x=frac_clonal, 
     y=clonal_tmrca, 
     height=9, 
     space=0,
@@ -46,7 +46,7 @@ if R != 0:
 
 ## labels
 g.set_axis_labels("Proportion of genome", "Generations", fontsize=12)
-g.figure.suptitle("Fraction of true clonal interval vs clonal $T_{\\text{mrca}}$ (" + run_index + ")")
+g.figure.suptitle("Fraction of clonal interval vs clonal $T_{\\text{mrca}}$ (" + run_index + ")")
 
 if save_fig:
     g.figure.savefig("../figures/" + run_index + "h.png", dpi=300, bbox_inches="tight")

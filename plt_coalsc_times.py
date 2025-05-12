@@ -21,17 +21,17 @@ with open(input_path + "_dist", "rb") as file:
     dist = pickle.load(file)
 avg_dist = np.mean(dist)
 
-with open(input_path + "_frac_trueclonal", "rb") as file:
-    trueclonal_tmrca = pickle.load(file)
+with open(input_path + "_frac_clonal", "rb") as file:
+    clonal_tmrca = pickle.load(file)
 
-frac_trueclonal, clonal_tmrca = zip(*trueclonal_tmrca)
+frac_clonal, clonal_tmrca = zip(*clonal_tmrca)
 
 mts = tskit.load(input_path)
 
 # find first fully recombined pair
 for (a, b) in list(combinations(range(mts.num_samples), 2)):
     pair_index = int(b - a - 1 + params["nsample"] * a - (a * (a + 1)) // 2)
-    if frac_trueclonal[pair_index] == 0:
+    if frac_clonal[pair_index] == 0:
         i = a
         j = b
         print(i)

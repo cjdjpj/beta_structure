@@ -7,7 +7,7 @@ import rustworkx as rx
 from itertools import combinations
 
 parser = argparse.ArgumentParser(
-                    prog='frac_trueclonal')
+                    prog='frac_clonal')
 parser.add_argument('--input', type=str, default="output")
 
 args = parser.parse_args()
@@ -55,7 +55,7 @@ for tree in mts.trees():
 
 clonal_tmrca = list(zip(clonal_interval/L, tmrca))
 
-with open(args.input + "_frac_trueclonal", 'wb') as file:
+with open(args.input + "_frac_clonal", 'wb') as file:
     pickle.dump(clonal_tmrca, file)
 
-print("---fraction true clonal computed---")
+print("---fraction clonal computed---")
