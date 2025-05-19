@@ -43,6 +43,6 @@ coalescence_times = []
 for tree in mts.trees():
     coalescence_times.append(tree.tmrca(i,j))
 
-plt.figure(figsize = (9,9))
+plt.figure(figsize = (6,6))
 sns.histplot(coalescence_times, bins=160)
-plt.show()
+# plt.savefig(run_index + "q.png", dpi=300)

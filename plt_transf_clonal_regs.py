@@ -28,40 +28,45 @@ clonal_tmrca = np.array(clonal_tmrca)
 
 tmrca = dist/(params["mu"]*2)
 
-# only so no type error, doesn't actually matter - everytime clonal_tmrca is None, frac_clonal is 0
-clonal_tmrca = np.array([0 if x is None else x for x in clonal_tmrca])
-clonal_pi = clonal_tmrca * params["mu"] * 2
+# remove nones
+no_nones = np.array([i for i, val in enumerate(clonal_tmrca) if val is not None])
+clonal_tmrca = np.array([clonal_tmrca[i] for i in no_nones])
+tmrca = np.array([tmrca[i] for i in no_nones])
+frac_clonal = np.array([frac_clonal[i] for i in no_nones])
 
+clonal_pi = clonal_tmrca * params["mu"] * 2
 recombinant_tmrca = (tmrca - np.multiply(frac_clonal, clonal_tmrca))/(1-frac_clonal)
 recombinant_pi = recombinant_tmrca * params["mu"] * 2
 
 g = sns.jointplot(
-    x=clonal_pi,
-    y=recombinant_pi,
+    x=clonal_tmrca,
+    y=recombinant_tmrca,
     kind="scatter",
-    height=9, 
+    height=6, 
     space=0,
     alpha=0,
     marginal_kws={"bins": 160}
 )
 
 sns.scatterplot(
-    x=clonal_pi,
-    y=recombinant_pi,
+    x=clonal_tmrca,
+    y=recombinant_tmrca,
     hue=frac_clonal,
     palette="viridis",
     ax=g.ax_joint,
     legend=True
 )
 
-g.set_axis_labels("Clonal distance", "Recombinant distance", fontsize=12)
-g.figure.suptitle("Clonal distance vs recombinant distance (" + run_index + ")", y=1.02)
+g.set_axis_labels("Clonal $T_{\\text{mrca}}$", "Recombinant $T_{\\text{mrca}}$", fontsize=12)
+rho = 2*params["pi"] * params["r_m"]
+model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
+g.figure.suptitle("Clonal $T_{\\text{mrca}}$ vs recombinant regions $T_{\\text{mrca}}$ (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 
 g.ax_joint.legend(title="Clonal fraction")
 
 if save_fig:
     g.figure.savefig("../figures/" + run_index + "z.png", dpi=300, bbox_inches="tight")
 else:
-    plt.subplots_adjust(bottom=0.1, left=0.1)
+    plt.subplots_adjust(bottom=0.1, left=0.1, top=0.95)
     plt.show()
 

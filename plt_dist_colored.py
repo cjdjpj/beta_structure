@@ -41,11 +41,13 @@ recomb_status = [
 ]
 
 ### PAIRWISE DISTANCE HISTOGRAM
-plt.figure(figsize = (9,9))
+plt.figure(figsize = (6,6))
 sns.histplot(x=dist, stat='probability', hue = recomb_status, bins=160, multiple = "stack", hue_order = ["Partially recombined", "Fully recombined", "Fully clonal"])
 plt.xlabel("Pairwise mean number of nucleotide differences (Nei's pi)")
 plt.ylabel("Frequency")
-plt.title("Pairwise diversity histogram (" + run_index + ")")
+rho = 2 * params["pi"] * params["r_m"]
+model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
+plt.title("Pairwise diversity histogram (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 if save_fig:
     plt.savefig("../figures/" + run_index + "d.png", dpi=300)
 else:

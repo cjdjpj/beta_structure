@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 ###
 save_fig = False
-run_index = "r015"
+run_index = "r001"
 ###
 
 input_path = "runs/" + run_index
@@ -37,7 +37,7 @@ with open(null_path + "_dist", "rb") as file:
 g = sns.jointplot(
     x=frac_iden_blk, 
     y=dist, 
-    height=9, 
+    height=6, 
     space=0,
     xlim=(0,1),
     marginal_kws={"bins": 160}
@@ -67,10 +67,12 @@ g.ax_joint.plot(r_x, r_y, color='red', linestyle='--')
 g.set_axis_labels("Proportion of 1kb sequence blocks identical", 
                   "Pairwise mean number of nucleotide differences (Nei's pi)", 
                   fontsize=12)
-g.figure.suptitle(f"Fraction of identical blocks vs distance ({run_index})")
+rho = 2*params["pi"] * params["r_m"]
+model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
+g.figure.suptitle("Fraction of identical blocks vs distance (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 
 if save_fig:
     g.figure.savefig("../figures/" + run_index + "g.png", dpi=300, bbox_inches="tight")
 else:
-    plt.subplots_adjust(bottom=0.1, left=0.1)
+    plt.subplots_adjust(bottom=0.1, left=0.1, top=0.95)
     plt.show()

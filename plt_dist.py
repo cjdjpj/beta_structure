@@ -25,12 +25,14 @@ avg_dist = np.mean(dist)
 print("Average pi:", avg_dist)
 
 ### PAIRWISE DISTANCE HISTOGRAM
-plt.figure(figsize = (9,9))
+plt.figure(figsize = (6,6))
 sns.histplot(dist, stat='probability', bins=160)
 plt.axvline(x = avg_dist, color = 'red', alpha = 0.3, label = "Average $\\pi$")
 plt.xlabel("Pairwise mean number of nucleotide differences (Nei's pi)")
 plt.ylabel("Frequency")
-plt.title("Pairwise diversity histogram (" + run_index + ")")
+rho = 2*params["pi"] * params["r_m"]
+model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
+plt.title("Pairwise diversity histogram (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 plt.legend()
 if save_fig:
     plt.savefig("../figures/" + run_index + "a.png", dpi=300)
@@ -60,7 +62,7 @@ else:
 # pc1_var = variance_explained["PC1"]*100
 # pc2_var = variance_explained["PC2"]*100
 #
-# plt.figure(figsize = (9,9))
+# plt.figure(figsize=(6,6))
 # sns.scatterplot(x=pcoa_coords[:, 0], y=pcoa_coords[:, 1])
 # plt.xlabel(f"PCA 1 ({pc1_var:.2f}%)")
 # plt.ylabel(f"PCA 2 ({pc2_var:.2f}%)")
@@ -72,7 +74,7 @@ else:
 #
 # ### PCA components
 # components = 8
-# plt.figure(figsize = (9,9))
+# plt.figure(figsize=(6,6))
 # sns.barplot(
 #     x=[f"PC{i+1}" for i in range(components)], 
 #     y=variance_explained.iloc[:components], 
@@ -88,7 +90,7 @@ else:
 # mu = params["mu"]
 # Z[:, 2] = Z[:, 2] / mu
 #
-# plt.figure(figsize=(9, 9))
+# plt.figure(figsize=(6,6))
 # sch.dendrogram(Z)
 # plt.ylabel("Generations")
 # plt.xlabel("Samples")

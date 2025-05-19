@@ -32,6 +32,9 @@ tmrca = dist/(params["mu"]*2)
 clonal_tmrca = [0 if x is None else x for x in clonal_tmrca] 
 
 recombinant_tmrca = (tmrca - np.multiply(frac_clonal, clonal_tmrca))/(1-frac_clonal)
+recombinant_pi = recombinant_tmrca * params["mu"] * 2
+
+print("Average pi of recomb regions: ", np.mean(recombinant_pi))
 
 recomb_status = [
     "Fully recombined" if frac == 0 
@@ -40,11 +43,13 @@ recomb_status = [
 ]
 
 ### PAIRWISE DISTANCE HISTOGRAM
-plt.figure(figsize = (9,9))
-sns.histplot(x=recombinant_tmrca, stat='probability', hue = recomb_status, bins=160, multiple = "stack", hue_order = ["Partially recombined", "Fully recombined"])
-plt.xlabel("$T_{\\text{mrca}}$ of recombined regions")
+plt.figure(figsize = (6,6))
+sns.histplot(x=recombinant_pi, stat='probability', bins=160, multiple = "stack", hue_order = ["Partially recombined", "Fully recombined"])
+plt.xlabel("Diversity of recombined regions")
 plt.ylabel("Frequency")
-plt.title("Recombinant regions $T_{\\text{mrca}}$ histogram (" + run_index + ")")
+rho = 2*params["pi"] * params["r_m"]
+model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
+plt.title("Diversity of recombinant regions (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 if save_fig:
     plt.savefig("../figures/" + run_index + "i.png", dpi=300)
 else:

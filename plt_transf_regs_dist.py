@@ -38,7 +38,7 @@ g = sns.jointplot(
     x=dist,
     y=recombinant_pi,
     kind="scatter",
-    height=9, 
+    height=6, 
     space=0,
     alpha=0,
     marginal_kws={"bins": 160}
@@ -54,8 +54,9 @@ sns.scatterplot(
 )
 
 g.set_axis_labels("Pairwise distance", "Recombinant segments distance", fontsize=12)
-g.figure.suptitle("Pairwise distance vs recombinant segments distance (" + run_index + ")", y=1.02)
-
+rho = 2*params["pi"] * params["r_m"]
+model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
+g.figure.suptitle("Pairwise distance vs recombinant segments distance (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 
 g.ax_joint.legend(title="Clonal fraction")
 
@@ -70,6 +71,6 @@ g.ax_joint.set_ylim(ylim)
 if save_fig:
     g.figure.savefig("../figures/" + run_index + "z.png", dpi=300, bbox_inches="tight")
 else:
-    plt.subplots_adjust(bottom=0.1, left=0.1)
+    plt.subplots_adjust(bottom=0.1, left=0.1, top=0.95)
     plt.show()
 

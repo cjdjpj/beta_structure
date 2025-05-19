@@ -21,7 +21,7 @@ afs = mts.allele_frequency_spectrum(mode="site", polarised=True)
 
 afs_values = afs[1:]
 
-plt.figure(figsize=(9, 9))
+plt.figure(figsize=(6,6))
 # plt.ylim(0, 0.1)
 sns.barplot(afs)
 

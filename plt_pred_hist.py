@@ -34,11 +34,13 @@ avg_recombinant_tmrca = avg_tmrca*2 - np.mean(frac_clonal) * avg_clonal_tmrca
 
 predicted_dist = np.multiply(frac_clonal, clonal_tmrca)+ (1-frac_clonal) * avg_recombinant_tmrca
 
-plt.figure(figsize = (9,9))
+plt.figure(figsize = (6,6))
 sns.histplot(predicted_dist, stat='probability', bins=160)
 plt.axvline(x = avg_tmrca, color = 'red', alpha = 0.3, label = "Average $T_{\\text{mrca}}$")
 plt.xlabel("Predicted $T_{\\text{mrca}}$")
 plt.ylabel("Frequency")
-plt.title("Predicted $T_{\\text{mrca}}$ histogram (" + run_index + ")")
+rho = 2*params["pi"] * params["r_m"]
+model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
+plt.title("Predicted $T_{\\text{mrca}}$ histogram (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 plt.legend()
 plt.show()
