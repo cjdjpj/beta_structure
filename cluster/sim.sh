@@ -1,7 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=sim
 #SBATCH --partition=4hrs
-#SBATCH --mem=4G
 #SBATCH --ntasks=1
 #SBATCH --mem=150G
 
@@ -10,7 +9,7 @@ srun python sim.py\
     --length 5000000\
     --track_length 5000\
     --nsample 100\
-    --mu 0.0000006\
+    --mu 0.025\
     --r_m 0.0\
     --model "kingman"\
-    --pi 0.03\
+    --pi 0.05\

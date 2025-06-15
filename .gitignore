@@ -2,6 +2,7 @@ __pycache__/
 _deprecated/
 runs/r*
 runs/catalogue.csv
+runs_full
 .DS_Store
 temp/
 typings/

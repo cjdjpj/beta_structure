@@ -15,6 +15,7 @@ parser.add_argument('--r_m', type=float, default=0.00)
 parser.add_argument('--model', type=str, default="kingman")
 parser.add_argument('--alpha', type=float, default=None)
 parser.add_argument('--pi', type=float, default=0.03)
+parser.add_argument('--store_gc_nodes', action="store_true")
 
 args = parser.parse_args()
 
@@ -49,19 +50,21 @@ else:
 
 print("Ne =",Ne)
 
+kwargs = dict(
+    samples=nsample,
+    model=model,
+    population_size=Ne,
+    ploidy=1,
+    sequence_length=l,
+    gene_conversion_rate=r,
+    gene_conversion_tract_length=t,
+)
 
-ts = msprime.sim_ancestry(nsample,
-                          model=model,
-                          population_size=Ne,
-                          ploidy=1,
-                          sequence_length=l,
-                          gene_conversion_rate=r,
-                          gene_conversion_tract_length=t,
-                          additional_nodes=(
-                              msprime.NodeType.GENE_CONVERSION
-                          ),
-                          coalescing_segments_only=False,
-                          )
+if args.store_gc_nodes:
+    kwargs["additional_nodes"] = (msprime.NodeType.GENE_CONVERSION,)
+    kwargs["coalescing_segments_only"] = False
+
+ts = msprime.sim_ancestry(**kwargs)
 
 print("---ancestry simulation done---")
 
