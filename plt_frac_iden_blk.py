@@ -64,7 +64,7 @@ r_y = expected_dist(r_x)
 g.ax_joint.plot(r_x, r_y, color='red', linestyle='--')
 
 ## labels
-g.set_axis_labels("Proportion of 1kb sequence blocks identical", 
+g.set_axis_labels("Proportion of 500 base blocks identical", 
                   "Pairwise mean number of nucleotide differences (Nei's pi)", 
                   fontsize=12)
 rho = 2*params["pi"] * params["r_m"]
@@ -72,7 +72,7 @@ model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" 
 g.figure.suptitle("Fraction of identical blocks vs distance (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 
 if save_fig:
-    g.figure.savefig("../figures/" + run_index + "g.png", dpi=300, bbox_inches="tight")
+    g.figure.savefig("../figures/runs/" + run_index + "_frac_iden_blk.png", dpi=300, bbox_inches="tight")
 else:
     plt.subplots_adjust(bottom=0.1, left=0.1, top=0.95)
     plt.show()

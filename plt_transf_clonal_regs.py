@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 np.set_printoptions(legacy='1.25')
 
 ###
-save_fig = False
 run_index = "r001"
 ###
 
@@ -64,9 +63,6 @@ g.figure.suptitle("Clonal $T_{\\text{mrca}}$ vs recombinant regions $T_{\\text{m
 
 g.ax_joint.legend(title="Clonal fraction")
 
-if save_fig:
-    g.figure.savefig("../figures/" + run_index + "z.png", dpi=300, bbox_inches="tight")
-else:
-    plt.subplots_adjust(bottom=0.1, left=0.1, top=0.95)
-    plt.show()
+plt.subplots_adjust(bottom=0.1, left=0.1, top=0.95)
+plt.show()
 

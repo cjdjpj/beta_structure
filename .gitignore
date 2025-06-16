@@ -1,6 +1,7 @@
 __pycache__/
 _deprecated/
-runs/r*
+runs/*
+!runs/catalogue_runs.py
 runs/catalogue.csv
 runs_full
 .DS_Store

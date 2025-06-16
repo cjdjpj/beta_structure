@@ -51,7 +51,7 @@ model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" 
 g.figure.suptitle("Fraction of clonal interval vs clonal $T_{\\text{mrca}}$ (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 
 if save_fig:
-    g.figure.savefig("../figures/" + run_index + "h.png", dpi=300, bbox_inches="tight")
+    g.figure.savefig("../figures/runs/" + run_index + "_frac_clonal.png", dpi=300, bbox_inches="tight")
 else:
     plt.subplots_adjust(bottom=0.1, left=0.1, top=0.95)
     plt.show()

@@ -17,6 +17,9 @@ print(json.dumps(params, indent = 4))
 
 with open(input_path + "_dist", "rb") as file:
     dist = pickle.load(file)
+with open(input_path + "_rd", "r") as file:
+    r_d = float(file.read())
+
 avg_dist = np.mean(dist)
 print("Average pi:", avg_dist)
 
@@ -45,10 +48,13 @@ plt.figure(figsize = (6,6))
 sns.histplot(x=dist, stat='probability', hue = recomb_status, bins=160, multiple = "stack", hue_order = ["Partially recombined", "Fully recombined", "Fully clonal"])
 plt.xlabel("Pairwise mean number of nucleotide differences (Nei's pi)")
 plt.ylabel("Frequency")
+plt.text(0.05, 0.8, f"$\\bar r_d$ = {r_d:.3f}", transform=plt.gca().transAxes,
+         fontsize=9, verticalalignment='top',
+         bbox=dict(boxstyle="round", facecolor="white", alpha=0.6))
 rho = 2 * params["pi"] * params["r_m"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
-plt.title("Pairwise diversity histogram (" + model_str + ", $\\rho$=" + str(rho)  + ")")
+plt.title("Pairwise diversity histogram (" + model_str + ", $\\rho$=" + str(round(rho, 3))  + ")")
 if save_fig:
-    plt.savefig("../figures/" + run_index + "d.png", dpi=300)
+    plt.savefig("../figures/runs/" + run_index + "_distcolored.png", dpi=300)
 else:
     plt.show()

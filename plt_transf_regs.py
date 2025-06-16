@@ -51,6 +51,6 @@ rho = 2*params["pi"] * params["r_m"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
 plt.title("Diversity of recombinant regions (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 if save_fig:
-    plt.savefig("../figures/" + run_index + "i.png", dpi=300)
+    plt.savefig("../figures/runs/" + run_index + "_transf_regs.png", dpi=300)
 else:
     plt.show()

@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 ###
-save_fig = False
 run_index = "r001"
 ###
 

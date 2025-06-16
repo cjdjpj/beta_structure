@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 np.set_printoptions(legacy='1.25')
 
 ###
-save_fig = False
 run_index = "r001"
 ###
 
@@ -68,9 +67,6 @@ g.ax_joint.plot(lims, lims, color='red', linestyle='--', linewidth=1)
 g.ax_joint.set_xlim(xlim)
 g.ax_joint.set_ylim(ylim)
 
-if save_fig:
-    g.figure.savefig("../figures/" + run_index + "z.png", dpi=300, bbox_inches="tight")
-else:
-    plt.subplots_adjust(bottom=0.1, left=0.1, top=0.95)
-    plt.show()
+plt.subplots_adjust(bottom=0.1, left=0.1, top=0.95)
+plt.show()
 
