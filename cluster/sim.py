@@ -9,12 +9,14 @@ parser = argparse.ArgumentParser(
 parser.add_argument('--output', type=str, default="output")
 parser.add_argument('--length', type=int, default=5000000)
 parser.add_argument('--track_length', type=int, default=5000)
-parser.add_argument('--nsample', type=int, default=100)
+parser.add_argument('--nsample', type=int, default=30)
 parser.add_argument('--mu', type=float, default=0.025)
 parser.add_argument('--r_m', type=float, default=0.00)
 parser.add_argument('--model', type=str, default="kingman")
 parser.add_argument('--alpha', type=float, default=None)
 parser.add_argument('--pi', type=float, default=0.03)
+parser.add_argument('--seed', type=int, default=None)
+parser.add_argument('--mut_seed', type=int, default=None)
 parser.add_argument('--store_gc_nodes', action="store_true")
 
 args = parser.parse_args()
@@ -61,7 +63,7 @@ kwargs = dict(
 )
 
 if args.store_gc_nodes:
-    kwargs["additional_nodes"] = (msprime.NodeType.GENE_CONVERSION,)
+    kwargs["additional_nodes"] = (msprime.NodeType.GENE_CONVERSION)
     kwargs["coalescing_segments_only"] = False
 
 ts = msprime.sim_ancestry(**kwargs)

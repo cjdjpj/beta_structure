@@ -12,4 +12,4 @@ srun python sim.py\
     --mu 0.025\
     --r_m 0.0\
     --model "kingman"\
-    --pi 0.05\
+    --pi 0.03\
