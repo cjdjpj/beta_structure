@@ -2,41 +2,46 @@ import tskit
 import pickle
 import argparse
 import numpy as np
+from collections import defaultdict
+from collections import Counter
 from itertools import combinations
 
 parser = argparse.ArgumentParser(
                     prog='frac_iden_blk')
 parser.add_argument('--input', type=str, default="output")
-parser.add_argument('--blk_size', type=int, default=10)
+parser.add_argument('--blk_size', type=int, default=500)
 
 args = parser.parse_args()
 
 # open tree sequence
 mts = tskit.load(args.input)
 
-pairs = list(combinations(range(mts.num_samples), 2))
+G = mts.genotype_matrix()
+num_sites, num_samples = G.shape
 
-# compute
-sites = [int(site.position) for site in mts.sites()]
+sites = mts.tables.sites.position.astype(int)
+block_idx = sites // args.blk_size
+num_blocks = int(mts.sequence_length // args.blk_size)
 
-# tally number of sites per block
-block_indices = np.floor_divide(sites, args.blk_size)
-muts_per_blk = np.bincount(block_indices)
-muts_per_blk = muts_per_blk[muts_per_blk != 0]
+blocks = [np.flatnonzero(block_idx == b) for b in range(num_blocks)]
 
-def prop_identical_blk(s1, s2):
-    i = 0
-    matches = 0
-    for muts in muts_per_blk:
-        if np.array_equal(s1[i : i + muts], s2[i : i + muts]):
-            matches += 1
-        i += muts
-    return matches / len(muts_per_blk)
+num_iden_blk = Counter()
+total_blocks = len(blocks)
 
-frac_iden_blk= []
-genotypes = mts.genotype_matrix()
-for (i,j) in pairs:
-    frac_iden_blk.append(prop_identical_blk(genotypes[:, i], genotypes[:, j]))
+for block in blocks:
+    sub = G[block, :]  
+    genotype_bytestrings = [row.tobytes() for row in sub.T]
+    iden_groups = defaultdict(list)
+
+    for samp_idx, genotype in enumerate(genotype_bytestrings):
+        iden_groups[genotype].append(samp_idx)
+
+    for iden_group in iden_groups.values():
+        if len(iden_groups) > 1:
+            for i, j in combinations(iden_group, 2):
+                num_iden_blk[i, j] += 1
+
+frac_iden_blk = [num_iden_blk.get((i, j), 0) / total_blocks for i,j in combinations(range(num_samples), 2)]
 
 with open(args.input + "_frac_iden_blk", 'wb') as file:
     pickle.dump(frac_iden_blk, file)
