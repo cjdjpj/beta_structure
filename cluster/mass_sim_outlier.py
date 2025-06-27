@@ -53,7 +53,6 @@ print("Ne =",Ne)
 def r_d(mts, pairs):
     ### COMPUTE R_D (Agapow & Burt 2001)
     gt = mts.genotype_matrix()
-    gt = gt[:500, :] # r_d converges quickly, not necessary to use all SNPs
     m, n = gt.shape
 
     pairs = np.array(list(combinations(range(n), 2)))
