@@ -14,7 +14,6 @@ mts = tskit.load(args.input)
 
 # genotype matrix 
 gt = mts.genotype_matrix()
-gt = gt[:5000, :] # r_d converges quickly, not necessary to use all SNPs
 m, n = gt.shape
 
 pairs = np.array(list(combinations(range(n), 2)))
