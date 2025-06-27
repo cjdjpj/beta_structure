@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('--output', type=str, default="output")
 parser.add_argument('--length', type=int, default=5000000)
 parser.add_argument('--track_length', type=int, default=5000)
-parser.add_argument('--nsample', type=int, default=30)
+parser.add_argument('--nsample', type=int, default=100)
 parser.add_argument('--mu', type=float, default=0.025)
 parser.add_argument('--r_m', type=float, default=0.00)
 parser.add_argument('--model', type=str, default="kingman")
@@ -60,6 +60,7 @@ kwargs = dict(
     sequence_length=l,
     gene_conversion_rate=r,
     gene_conversion_tract_length=t,
+    random_seed = args.seed
 )
 
 if args.store_gc_nodes:
@@ -70,7 +71,7 @@ ts = msprime.sim_ancestry(**kwargs)
 
 print("---ancestry simulation done---")
 
-mts = msprime.sim_mutations(ts, rate=mu)
+mts = msprime.sim_mutations(ts, rate=mu, random_seed = args.mut_seed)
 
 print("---mutation simulation done---")
 
