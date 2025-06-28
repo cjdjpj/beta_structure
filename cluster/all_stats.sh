@@ -1,7 +1,8 @@
 #!/bin/bash
 
-INPUT="r001"
+INPUT="runs/r001"
 
-sbatch dist.sh "runs/$INPUT"
-sbatch frac_iden_blk.sh "runs/$INPUT"
-sbatch frac_clonal.sh "runs/$INPUT"
+sbatch dist.sh "$INPUT"
+sbatch frac_iden_blk.sh "$INPUT"
+sbatch frac_clonal.sh "$INPUT"
+sbatch rd.sh "$INPUT"
