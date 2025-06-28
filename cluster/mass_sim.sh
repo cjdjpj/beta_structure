@@ -2,14 +2,14 @@
 #SBATCH --job-name=mass_sim
 #SBATCH --partition=1day
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=100
+#SBATCH --cpus-per-task=250
 #SBATCH --mem=15G
-#SBATCH --array=0-9
+#SBATCH --array=0-39
 #SBATCH --output=/dev/null
 #SBATCH --error=/dev/null
 
-START=$((SLURM_ARRAY_TASK_ID * 100))
-END=$((START + 99))
+START=$((SLURM_ARRAY_TASK_ID * 250))
+END=$((START + 249))
 
 for i in $(seq $START $END); do
     python mass_sim.py \
