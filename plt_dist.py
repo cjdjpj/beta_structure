@@ -7,7 +7,6 @@ import scipy.cluster.hierarchy as sch
 from scipy.spatial.distance import squareform
 from skbio.stats.ordination import pcoa
 from sklearn.manifold import TSNE
-np.set_printoptions(legacy='1.25')
 
 ###
 save_fig = False
@@ -35,8 +34,7 @@ plt.axvline(x = avg_dist, color = 'red', alpha = 0.3, label = "Average $\\pi$")
 plt.xlabel("Pairwise mean number of nucleotide differences (Nei's pi)")
 plt.ylabel("Frequency")
 plt.text(0.05, 0.8, f"$\\bar r_d$ = {r_d:.3f}", transform=plt.gca().transAxes,
-         fontsize=9, verticalalignment='top',
-         bbox=dict(boxstyle="round", facecolor="white", alpha=0.6))
+         fontsize=9, verticalalignment='top')
 rho = 2*params["pi"] * params["r_m"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
 plt.title("Pairwise diversity histogram (" + model_str + ", $\\rho$=" + str(rho)  + ")")
