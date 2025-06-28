@@ -13,7 +13,7 @@ END=$((START + 99))
 
 for i in $(seq $START $END); do
     python mass_sim.py \
-        --output "runs/kingman_${i}" \
+        --output "mass_sim_results/k_0_${i}" \
         --length 5000000 \
         --track_length 5000 \
         --nsample 100 \

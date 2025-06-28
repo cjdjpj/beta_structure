@@ -14,6 +14,7 @@ mts = tskit.load(args.input)
 
 # genotype matrix 
 gt = mts.genotype_matrix()
+gt = gt[:100000, :]
 m, n = gt.shape
 
 pairs = np.array(list(combinations(range(n), 2)))

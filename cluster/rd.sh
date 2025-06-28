@@ -6,4 +6,4 @@
 #SBATCH --mem=150G
 
 srun python rd.py\
-    --input "runs/r001"
+    --input "$1"

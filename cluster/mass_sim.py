@@ -52,6 +52,7 @@ print("Ne =",Ne)
 def r_d(mts, pairs):
     ### COMPUTE R_D (Agapow & Burt 2001)
     gt = mts.genotype_matrix()
+    gt = gt[:100000, :]
     m, n = gt.shape
 
     pairs = np.array(list(combinations(range(n), 2)))
@@ -81,12 +82,12 @@ def r_d(mts, pairs):
 
     return r_d
 
-def pi(mts, pairs):
-    """COMPUTE pi"""
-    dist = mts.diversity(pairs, mode='site')
-    pi = np.mean(dist)
-
-    return pi
+# def pi(mts, pairs):
+#     """COMPUTE pi"""
+#     dist = mts.diversity(pairs, mode='site')
+#     pi = np.mean(dist)
+#
+#     return pi
     
 ts = msprime.sim_ancestry(nsample,
                           model=model,
@@ -101,4 +102,5 @@ pairs = np.array(list(combinations(range(args.nsample), 2)))
 mts = msprime.sim_mutations(ts, rate=mu)
 
 with open(args.output, "w") as file:
-    file.write(str(pi(mts, pairs)) + "," + str(r_d(mts,pairs)) + "\n")
+    # file.write(str(pi(mts, pairs)) + "," + str(r_d(mts,pairs)) + "\n")
+    file.write(str(r_d(mts,pairs)) + "\n")
