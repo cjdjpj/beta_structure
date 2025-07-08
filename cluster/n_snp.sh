@@ -6,11 +6,11 @@
 #SBATCH --mem=150G
 #SBATCH --array=0-8
 
-n_values=(2 3 4 5 6 7 8 9 11)
+n_values=(1 2 3 4 5 6 7 8 9 11 13 15 17 19 21 23 25)
 
 n=${n_values[$SLURM_ARRAY_TASK_ID]}
 
 srun python n_snp.py \
-    --input "runs/r004"\
+    --input "runs_inf_allele/ia01"\
     --n "$n"
 
