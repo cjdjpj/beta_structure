@@ -84,6 +84,9 @@ for ax, run_index, label in zip(axes.values(), run_indices, [r"$\textbf{A}$", r"
                     ax=inset_ax, color=sns.color_palette()[5],
                     edgecolor="white", linewidth=0.2, s=12)
 
+    inset_ax.set_ylim(-0.04, 0.04)
+    inset_ax.set_ylim(-0.025, 0.025)
+
     inset_ax.set_xticklabels([])
     inset_ax.set_yticklabels([])
     inset_ax.set_xlabel("")
@@ -95,7 +98,7 @@ for ax, run_index, label in zip(axes.values(), run_indices, [r"$\textbf{A}$", r"
     ax.text(0.05, 0.95, f"$\\bar r_d$ = {r_d:.3f}", transform=ax.transAxes,
             verticalalignment="top")
     
-    rho = params["r_m"] * params["track_length"] * params["pi"]/(2)
+    rho = params["r_m"] * params["track_length"] * params["pi"]
     ax.set_title(f"$\\rho = {rho:.4g}$")
     ax.set_xlabel("")
 

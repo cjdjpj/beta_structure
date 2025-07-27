@@ -53,7 +53,7 @@ sns.scatterplot(
 )
 
 g.set_axis_labels("Pairwise distance", "Recombinant segments distance", fontsize=12)
-rho = 2*params["pi"] * params["r_m"]
+rho = params["r_m"] * params["track_length"] * params["pi"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
 g.figure.suptitle("Pairwise distance vs recombinant segments distance (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 

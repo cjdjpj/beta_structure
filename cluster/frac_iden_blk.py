@@ -9,7 +9,7 @@ from itertools import combinations
 parser = argparse.ArgumentParser(
                     prog='frac_iden_blk')
 parser.add_argument('--input', type=str, default="output")
-parser.add_argument('--blk_size', type=int, default=500)
+parser.add_argument('--blk_size', type=int, default=1000)
 
 args = parser.parse_args()
 

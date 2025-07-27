@@ -34,6 +34,7 @@ with open(input_path + "_frac_clonal", "rb") as file:
 frac_clonal, clonal_tmrca = zip(*clonal_tmrca)
 frac_clonal = np.array(frac_clonal)
 clonal_tmrca = np.array(clonal_tmrca)
+dist = np.array(dist)
 
 tmrca = dist/(params["mu"]*2)
 
@@ -56,9 +57,9 @@ plt.ylabel("Frequency")
 if os.path.exists(input_path + "_rd"):
     plt.text(0.05, 0.75, f"$\\bar r_d$ = {r_d:.3f}", transform=plt.gca().transAxes,
              fontsize=9, verticalalignment='top')
-# rho = 2 * params["pi"] * params["r_m"]
+rho = params["r_m"] * params["track_length"] * params["pi"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
-plt.title("Pairwise diversity histogram (" + model_str + ", $r/m$=" + str(round(params["r_m"], 3))  + ")")
+plt.title("Pairwise diversity histogram (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 if save_fig:
     plt.savefig("../figures/runs_full/" + run_index + "_distcolored.png", dpi=300)
 else:

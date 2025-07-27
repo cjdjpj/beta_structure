@@ -9,42 +9,53 @@ import warnings
 from collections import Counter
 from scipy.stats import expon
 warnings.filterwarnings("ignore")
+import scienceplots
+
+plt.style.use("science")
+plt.rcParams.update({
+    "font.size": 10,
+    "axes.titlesize": 10,
+    "axes.labelsize": 9,
+    "xtick.labelsize": 8,
+    "ytick.labelsize": 8,
+    "legend.fontsize": 7,
+    "figure.titlesize": 10,
+})
 
 ###
 run_index = "r001"
 ###
 
 input_path = "runs/" + run_index
-input_path = "output"
 
 with open(input_path + ".json", "r") as file:
     params = json.load(file)
 with open(input_path + "_2_snp", "rb") as file:
     two_snps = pickle.load(file)
 
-# all_sample_occurances = [num for tup in two_snps for num in tup]
-#
-# counts = list(Counter(all_sample_occurances).values())
-# sorted_counts = np.sort(counts)
-# ccdf_y = 1.0 - np.arange(1, len(sorted_counts)+1) / len(sorted_counts)
-#
-# # Exponential fit
-# loc, scale = expon.fit(sorted_counts)
-# x_vals = np.linspace(sorted_counts.min(), sorted_counts.max(), 1000)
-# ccdf_fit = 1 - expon.cdf(x_vals, loc=loc, scale=scale)
-#
-# plt.figure(figsize=(9, 9))
-# sns.scatterplot(x=sorted_counts, y=ccdf_y, label="Simulation")
-# plt.plot(x_vals, ccdf_fit, color='red', label="Exponential Fit")
-#
-# plt.xlabel("2-SNP count")
-# plt.ylabel("$P(X \\geq x)$")
-# plt.yscale("log")
-# plt.xscale("log")
-# plt.title("Reverse Cumulative Distribution")
-# plt.legend()
-# plt.grid(True)
-# plt.show()
+all_sample_occurances = [num for tup in two_snps for num in tup]
+
+counts = list(Counter(all_sample_occurances).values())
+sorted_counts = np.sort(counts)
+ccdf_y = 1.0 - np.arange(1, len(sorted_counts)+1) / len(sorted_counts)
+
+# exponential fit
+loc, scale = expon.fit(sorted_counts)
+x_vals = np.linspace(sorted_counts.min(), sorted_counts.max(), 1000)
+ccdf_fit = 1 - expon.cdf(x_vals, loc=loc, scale=scale)
+
+plt.figure(figsize=(5, 5))
+sns.scatterplot(x=sorted_counts, y=ccdf_y, edgecolor="none")
+plt.plot(x_vals, ccdf_fit, color='red', label="Exponential Fit")
+
+plt.xlabel("2-SNP count")
+plt.ylabel("$P(X \\geq x)$")
+plt.yscale("log")
+plt.xscale("log")
+plt.title("Reverse Cumulative Distribution")
+plt.legend()
+plt.grid(True)
+plt.show()
 
 ### 2-SNP graph with focal sample ###
 def two_snp_neighbours(pairs, target):

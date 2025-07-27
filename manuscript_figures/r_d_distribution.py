@@ -45,7 +45,7 @@ cdf2 = pd.concat([df3, df7], ignore_index=True)
 cdf3 = pd.concat([df4, df8], ignore_index=True)
 cdfs = [cdf1, cdf2, cdf3]
 
-titles = [r"$\rho = 0$", r"$\rho = 0.75$", r"$\rho = 7.5$"]
+titles = [r"$\rho = 0$", r"$\rho = 1.5$", r"$\rho = 15$"]
 
 # CREATE FIGURE
 fig, axes = plt.subplot_mosaic(
@@ -62,9 +62,11 @@ plt.subplots_adjust(wspace=0.3, hspace=0.15)
 
 for ax, cdf, title, label in zip([axes["A"], axes["B"], axes["C"]], cdfs, titles, [r"$\textbf{A}$", r"$\textbf{B}$", r"$\textbf{C}$"]):
 
-    bins = 30
+    bins = 40
+    if ax == axes["C"]:
+        bins = 30
     sns.histplot(
-        data=cdf, x=cdf.columns[0], bins=30, hue="model", stat="probability",
+        data=cdf, x=cdf.columns[0], bins=bins, hue="model", stat="probability",
         multiple="layer", ax=ax, legend = (ax == axes["C"])
     )
 
@@ -81,7 +83,9 @@ for ax, cdf, title, label in zip([axes["A"], axes["B"], axes["C"]], cdfs, titles
 
 for ax, cdf in zip([axes["a"], axes["b"], axes["c"]], cdfs):
 
-    bins = 30
+    bins = 40
+    if ax == axes["c"]:
+        bins = 30
     sns.histplot(
         data=cdf, x=cdf.columns[0], bins=30, hue="model", stat="probability",
         multiple="layer", ax=ax, legend = False

@@ -10,7 +10,7 @@ run_index = "r001"
 ###
 
 input_path = "runs/" + run_index
-blk_size = 500 # for analytical prediction
+blk_size = 1000 # for analytical prediction
 
 with open(input_path + ".json", "r") as file:
     params = json.load(file)
@@ -64,12 +64,12 @@ r_y = expected_dist(r_x)
 g.ax_joint.plot(r_x, r_y, color='red', linestyle='--')
 
 ## labels
-g.set_axis_labels("Proportion of 500 base blocks identical", 
+g.set_axis_labels("Proportion of 1kb base blocks identical", 
                   "Pairwise mean number of nucleotide differences (Nei's pi)", 
                   fontsize=12)
-# rho = 2*params["pi"] * params["r_m"]
+rho = params["r_m"] * params["track_length"] * params["pi"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
-g.figure.suptitle("Fraction of identical blocks vs distance (" + model_str + ", $r/m$=" + str(params["r_m"])  + ")")
+g.figure.suptitle("Fraction of identical blocks vs distance (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 
 if save_fig:
     g.figure.savefig("../figures/runs_full/" + run_index + "_frac_iden_blk.png", dpi=300, bbox_inches="tight")

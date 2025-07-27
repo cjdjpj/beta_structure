@@ -7,4 +7,4 @@
 
 srun python frac_iden_blk.py\
     --input "$1"\
-    --blk_size 500
+    --blk_size 1000

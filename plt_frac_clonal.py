@@ -46,9 +46,9 @@ if R != 0:
 
 ## labels
 g.set_axis_labels("Proportion of genome", "Generations", fontsize=12)
-# rho = 2*params["pi"] * params["r_m"]
+rho = params["r_m"] * params["track_length"] * params["pi"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
-g.figure.suptitle("Fraction of clonal interval vs clonal $T_{\\text{mrca}}$ (" + model_str + ", $r/m$=" + str(r_m)  + ")")
+g.figure.suptitle("Fraction of clonal interval vs clonal $T_{\\text{mrca}}$ (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 
 if save_fig:
     g.figure.savefig("../figures/runs_full/" + run_index + "_frac_clonal.png", dpi=300, bbox_inches="tight")

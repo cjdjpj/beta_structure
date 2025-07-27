@@ -1,8 +1,11 @@
+import numpy as np
 import json
-import pickle
+import pickle 
 import seaborn as sns
 import matplotlib.pyplot as plt
-from matplotlib.ticker import FormatStrFormatter
+import matplotlib.ticker as mticker
+from sklearn.manifold import MDS
+from scipy.spatial.distance import squareform
 import scienceplots
 
 plt.style.use("science")
@@ -17,49 +20,81 @@ plt.rcParams.update({
 })
 
 save_fig = True
+run_indices = ["234", "151", "212", "77"]
 
-fig, ax = plt.subplot_mosaic(
-    [
-        ["A", "B"],
-        ["C", "D"]
-    ],
-    figsize = (4.8, 4.8),
-    sharey = True,
-)
-plt.subplots_adjust(wspace=0.15, hspace=0.15)
+def load_run(run_index):
+    input_path = "runs_structured/" + run_index
 
-paths = [
-    "_deprecated/runs_full/r035",
-    "runs_structured/212",
-    "_deprecated/runs_full/r030",
-    "runs_structured/151",
-]
-
-for ax, path, label in zip(ax.values(), paths, [r"$\textbf{A}$", r"$\textbf{B}$", r"$\textbf{C}$", r"$\textbf{D}$"]):
-    with open(path + "_dist", "rb") as file:
-        dist = pickle.load(file)
-    with open(path + ".json", "r") as file:
+    with open(input_path + ".json", "r") as file:
         params = json.load(file)
 
+    with open(input_path + "_dist", "rb") as file:
+        dist = pickle.load(file)
+
+    with open(input_path + "_rd", "r") as file:
+        r_d = float(file.read())
+
+    with open(input_path + "_frac_clonal", "rb") as file:
+        clonal_tmrca = pickle.load(file)
+
+    frac_clonal, clonal_tmrca = zip(*clonal_tmrca)
+    frac_clonal = np.array(frac_clonal)
+    clonal_tmrca = np.array(clonal_tmrca)
+    clonal_tmrca = [0 if x is None else x for x in clonal_tmrca]
+    clonal_tmrca = np.array(clonal_tmrca)
+
+    recomb_status = [
+        "Fully\nrecombined" if frac == 0 
+        else "Partially\nrecombined" if 0 < frac < 1 
+        else "Fully clonal" 
+        for frac in frac_clonal
+    ]
+
+    return dist, recomb_status, r_d, params
+
+# CREATE FIGURE
+fig, axes = plt.subplot_mosaic(
+    [
+        ["A", "A", "B", "B", "C", "C", "D", "D"],
+        ["A", "A", "B", "B", "C", "C", "D", "D"],
+    ],
+    figsize = (8, 2),
+    sharey = True
+)
+
+plt.subplots_adjust(wspace=0.3, hspace=0.15)
+
+for ax, run_index, label in zip(axes.values(), run_indices, [r"$\textbf{A}$", r"$\textbf{B}$", r"$\textbf{C}$", r"$\textbf{D}$"]):
+    dist, recomb_status, r_d, params = load_run(run_index)
+
     sns.histplot(
-        x=dist, stat="probability", bins=50,
-        ax=ax, legend = None
+        x=dist, stat="probability", hue=recomb_status,
+        bins=40, multiple="stack", hue_order=["Partially\nrecombined", "Fully\nrecombined", "Fully clonal"],
+        ax=ax, legend = (ax == axes["D"])
     )
+
+    ax.text(-0.1, 1.1, label, transform=ax.transAxes, 
+            fontweight="bold", va="top", ha="left")
     
-    ax.text(-0.1, 1.07, label, transform=ax.transAxes, 
-            fontweight="bold", va="top", ha="left")
+    ax.text(0.05, 0.95, f"$\\bar r_d$ = {r_d:.3f}", transform=ax.transAxes,
+            verticalalignment="top")
+    
+    rho = params["r_m"] * params["track_length"] * params["pi"]
+    ax.set_title(f"$\\rho = {rho:.4g}$")
+    ax.set_xlabel("")
 
-    ax.text(0.1, 0.93, "$\\alpha = " + str(params["alpha"]) + "$", transform=ax.transAxes, 
-            fontweight="bold", va="top", ha="left")
-    ax.text(0.1, 0.86, "$\\rho/\\mu= " + str(params["r_m"]) + "$", transform=ax.transAxes, 
-            fontweight="bold", va="top", ha="left")
+    if ax != axes["A"]:
+        ax.set_ylabel("")
 
-    ax.set_ylabel("")
+    ax.xaxis.set_major_formatter(mticker.FormatStrFormatter("%.2f"))
+    ax.yaxis.set_major_formatter(mticker.FormatStrFormatter("%.1f"))
 
-fig.text(0.01, 0.5, "Probability", va="center", rotation="vertical")
-fig.text(0.5, 0.04, "Pairwise mean number of nucleotide differences (Nei's $\\pi$)", ha="center")
+sns.move_legend(axes["D"], "center left")
+
+fig.text(0.5, 0.00, "Pairwise mean number of nucleotide differences", ha="center")
+fig.subplots_adjust(left=0.15, bottom=0.15)
 
 if save_fig:
-    plt.savefig("../figures/structure_platter.png", dpi=300, bbox_inches = "tight")
+    plt.savefig("../figures/structure_platter.png", dpi=500, bbox_inches = "tight")
 else:
     plt.show()

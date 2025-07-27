@@ -23,7 +23,7 @@ plt.rcParams.update({
 
 ###
 n_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 13, 15, 17, 19, 21, 23, 25]
-run_indices = ["ia01", "ia02", "ia04", "ia08"]
+run_indices = ["is01", "is02", "is04", "is08"]
 ###
 
 def entropy(tuples_list):
@@ -50,7 +50,7 @@ for run_index, ax, r_m in zip(run_indices, ["A", "B", "C", "D"], ["0.0", "0.01",
     sample_entropy_all_n = defaultdict(list)
 
     for n in n_vals:
-        input_path = "runs_inf_allele/" + run_index + "_" + str(n) + "_snp"
+        input_path = "runs_inf_sites/" + run_index + "_" + str(n) + "_snp"
 
         with open(input_path, "rb") as file:
             two_snps = pickle.load(file)
@@ -78,4 +78,4 @@ for run_index, ax, r_m in zip(run_indices, ["A", "B", "C", "D"], ["0.0", "0.01",
 fig.text(0.1, 0.5, "Entropy of the n-SNP distribution", va="center", rotation="vertical")
 fig.subplots_adjust(left=0.15, bottom=0.15)
 
-plt.savefig("../figures/entropy.png", dpi=500, bbox_inches = "tight")
+plt.show()

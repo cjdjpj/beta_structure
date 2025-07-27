@@ -29,13 +29,13 @@ print("Average pi:", avg_dist)
 
 ### PAIRWISE DISTANCE HISTOGRAM
 plt.figure(figsize = (6,6))
-sns.histplot(dist, stat='probability', bins=160)
+sns.histplot(dist, stat='probability', bins=100)
 plt.axvline(x = avg_dist, color = 'red', alpha = 0.3, label = "Average $\\pi$")
 plt.xlabel("Pairwise mean number of nucleotide differences (Nei's pi)")
 plt.ylabel("Frequency")
 plt.text(0.05, 0.8, f"$\\bar r_d$ = {r_d:.3f}", transform=plt.gca().transAxes,
          fontsize=9, verticalalignment='top')
-rho = 2*params["pi"] * params["r_m"]
+rho = params["r_m"] * params["track_length"] * params["pi"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
 plt.title("Pairwise diversity histogram (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 plt.legend()
@@ -62,15 +62,18 @@ else:
 # ### PCA
 # dist_matrix = squareform(dist)
 # pcoa_results = pcoa(dist_matrix)
-
+#
 # ### 2D PCA
 # pcoa_coords = pcoa_results.samples[['PC1', 'PC2']].values
 # variance_explained = pcoa_results.proportion_explained
 # pc1_var = variance_explained["PC1"]*100
 # pc2_var = variance_explained["PC2"]*100
 #
+# jitter_strength = 0.0005
+# jittered_coords = pcoa_coords + np.random.normal(loc=0, scale=jitter_strength, size=pcoa_coords.shape)
+#
 # plt.figure(figsize=(6,6))
-# sns.scatterplot(x=pcoa_coords[:, 0], y=pcoa_coords[:, 1])
+# sns.scatterplot(x=jittered_coords[:, 0], y=jittered_coords[:, 1])
 # plt.xlabel(f"PCA 1 ({pc1_var:.2f}%)")
 # plt.ylabel(f"PCA 2 ({pc2_var:.2f}%)")
 # plt.title(f"PCoA ({pc1_var+pc2_var:.2f}% variance explained) (" + run_index + ")")
@@ -96,17 +99,17 @@ else:
 #
 # plt.show()
 
-# ### PCA components
+# ### Scree plot
 # components = 8
 # plt.figure(figsize=(6,6))
-# sns.barplot(
+# sns.lineplot(
 #     x=[f"PC{i+1}" for i in range(components)], 
 #     y=variance_explained.iloc[:components], 
 # )
 # plt.xticks(rotation=90)
 # plt.ylim(0,1)
 # plt.ylabel("Proportion of variance explained")
-# plt.title("Proportion of variance explained by PCoA (" + run_index + ")")
+# plt.title("Scree plot of PCoA (" + run_index + ")")
 # plt.show()
 #
 # ### PAIRWISE DISTANCE DENDROGRAM

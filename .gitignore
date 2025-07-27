@@ -4,8 +4,13 @@ runs/*
 !runs/catalogue_runs.py
 runs/catalogue.csv
 runs_full
+runs_mass
+runs_structured
+runs_inf_sites
+runs_mass_frac_clonal
 .DS_Store
 temp/
 typings/
 presentation/
 explore.py
+output*

@@ -57,7 +57,7 @@ sns.scatterplot(
 )
 
 g.set_axis_labels("Clonal $T_{\\text{mrca}}$", "Recombinant $T_{\\text{mrca}}$", fontsize=12)
-rho = 2*params["pi"] * params["r_m"]
+rho = params["r_m"] * params["track_length"] * params["pi"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
 g.figure.suptitle("Clonal $T_{\\text{mrca}}$ vs recombinant regions $T_{\\text{mrca}}$ (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 
