@@ -20,7 +20,7 @@ plt.rcParams.update({
 })
 
 save_fig = True
-run_indices = ["234", "151", "212", "77"]
+run_indices = ["156", "234", "151", "77"]
 
 def load_run(run_index):
     input_path = "runs_structured/" + run_index
@@ -59,7 +59,8 @@ fig, axes = plt.subplot_mosaic(
         ["A", "A", "B", "B", "C", "C", "D", "D"],
     ],
     figsize = (8, 2),
-    sharey = True
+    sharey = True,
+    sharex = True
 )
 
 plt.subplots_adjust(wspace=0.3, hspace=0.15)
@@ -76,11 +77,14 @@ for ax, run_index, label in zip(axes.values(), run_indices, [r"$\textbf{A}$", r"
     ax.text(-0.1, 1.1, label, transform=ax.transAxes, 
             fontweight="bold", va="top", ha="left")
     
-    ax.text(0.05, 0.95, f"$\\bar r_d$ = {r_d:.3f}", transform=ax.transAxes,
-            verticalalignment="top")
-    
-    rho = params["r_m"] * params["track_length"] * params["pi"]
-    ax.set_title(f"$\\rho = {rho:.4g}$")
+
+    if ax == axes["D"]:
+        ax.text(0.15, 0.95, f"$\\bar r_d$ = {r_d:.3f}", transform=ax.transAxes,
+                verticalalignment="top")
+    else:
+        ax.text(0.45, 0.95, f"$\\bar r_d$ = {r_d:.3f}", transform=ax.transAxes,
+                verticalalignment="top")
+
     ax.set_xlabel("")
 
     if ax != axes["A"]:
