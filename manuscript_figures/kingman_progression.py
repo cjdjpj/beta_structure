@@ -19,8 +19,10 @@ plt.rcParams.update({
     "figure.titlesize": 10,
 })
 
+###
 save_fig = True
 run_indices = ["r001", "r002", "r004", "r008"]
+###
 
 def load_run(run_index):
     input_path = "runs/" + run_index
@@ -37,11 +39,8 @@ def load_run(run_index):
     with open(input_path + "_frac_clonal", "rb") as file:
         clonal_tmrca = pickle.load(file)
 
-    frac_clonal, clonal_tmrca = zip(*clonal_tmrca)
-    frac_clonal = np.array(frac_clonal)
-    clonal_tmrca = np.array(clonal_tmrca)
-    clonal_tmrca = [0 if x is None else x for x in clonal_tmrca]
-    clonal_tmrca = np.array(clonal_tmrca)
+    frac_clonal, clonal_tmrca = map(np.array, zip(*clonal_tmrca))
+    clonal_tmrca = np.array([0 if x is None else x for x in clonal_tmrca])
 
     recomb_status = [
         "Fully recombined" if frac == 0 
@@ -62,19 +61,20 @@ fig, axes = plt.subplot_mosaic(
     sharey = True
 )
 
-plt.subplots_adjust(wspace=0.3, hspace=0.15)
+# SUBPLOTS A-D
+for label, run_index in zip(["A", "B", "C", "D"], run_indices):
+    ax = axes[label]
 
-for ax, run_index, label in zip(axes.values(), run_indices, [r"$\textbf{A}$", r"$\textbf{B}$", r"$\textbf{C}$", r"$\textbf{D}$"]):
     dist, recomb_status, r_d, params = load_run(run_index)
 
     sns.histplot(
         x=dist, stat="probability", hue=recomb_status,
         bins=40, multiple="stack", hue_order=["Partially\nrecombined", "Fully recombined", "Fully clonal"],
-        ax=ax, legend = (ax == axes["D"])
+        ax=ax, legend = (label == "D")
     )
 
+    ### inset PCA
     inset_ax = ax.inset_axes([0.05, 0.45, 0.35, 0.35])
-
     dist_matrix = squareform(dist)
 
     mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42)
@@ -91,20 +91,22 @@ for ax, run_index, label in zip(axes.values(), run_indices, [r"$\textbf{A}$", r"
     inset_ax.set_yticklabels([])
     inset_ax.set_xlabel("")
     inset_ax.set_ylabel("")
+    ###
 
-    ax.text(-0.1, 1.1, label, transform=ax.transAxes, 
+    # panel labels
+    ax.text(-0.1, 1.1, rf"$\textbf{{{label}}}$", transform=ax.transAxes, 
             fontweight="bold", va="top", ha="left")
     
+    # r_d value
     ax.text(0.05, 0.95, f"$\\bar r_d$ = {r_d:.3f}", transform=ax.transAxes,
             verticalalignment="top")
     
+    # subplot title/labels
     rho = params["r_m"] * params["track_length"] * params["pi"]
     ax.set_title(f"$\\rho = {rho:.4g}$")
     ax.set_xlabel("")
-
     if ax != axes["A"]:
         ax.set_ylabel("")
-
     ax.xaxis.set_major_formatter(mticker.FormatStrFormatter("%.2f"))
     ax.yaxis.set_major_formatter(mticker.FormatStrFormatter("%.1f"))
 

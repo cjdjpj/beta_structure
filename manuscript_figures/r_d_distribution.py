@@ -1,6 +1,8 @@
+import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import scienceplots
 
 plt.style.use("science")
@@ -33,12 +35,12 @@ df6 = pd.read_csv(dir + file_stem6 + ".csv", header=None)
 df7 = pd.read_csv(dir + file_stem7 + ".csv", header=None)
 df8 = pd.read_csv(dir + file_stem8 + ".csv", header=None)
 
-df2["model"] = r"Kingman"
-df3["model"] = r"Kingman"
-df4["model"] = r"Kingman"
-df6["model"] = r"Beta ($\alpha = 1.1$)"
-df7["model"] = r"Beta ($\alpha = 1.1$)"
-df8["model"] = r"Beta ($\alpha = 1.1$)"
+df2["model"] = r"KC"
+df3["model"] = r"KC"
+df4["model"] = r"KC"
+df6["model"] = r"BC ($\alpha = 1.1$)"
+df7["model"] = r"BC ($\alpha = 1.1$)"
+df8["model"] = r"BC ($\alpha = 1.1$)"
 
 cdf1 = pd.concat([df2, df6], ignore_index=True)
 cdf2 = pd.concat([df3, df7], ignore_index=True)
@@ -58,37 +60,67 @@ fig, axes = plt.subplot_mosaic(
     sharex = True
 )
 
-plt.subplots_adjust(wspace=0.3, hspace=0.15)
 
-for ax, cdf, title, label in zip([axes["A"], axes["B"], axes["C"]], cdfs, titles, [r"$\textbf{A}$", r"$\textbf{B}$", r"$\textbf{C}$"]):
+for label, cdf, title, in zip(["A", "B", "C", "D"], cdfs, titles):
 
-    bins = 40
-    if ax == axes["C"]:
-        bins = 30
-    sns.histplot(
-        data=cdf, x=cdf.columns[0], bins=bins, hue="model", stat="probability",
-        multiple="layer", ax=ax, legend = (ax == axes["C"])
+    ax = axes[label]
+
+    x_col = cdf.columns[0]
+    rcdf_data = []
+    for model_name, group in cdf.groupby("model"):
+        sorted_vals = np.sort(group[x_col])
+        probs = 1-np.arange(1, len(sorted_vals)+1) / len(sorted_vals)
+        rcdf_data.append(pd.DataFrame({
+            x_col: sorted_vals,
+            'reverse_cdf': probs,
+            "model": model_name
+        }))
+
+    rcdf_df = pd.concat(rcdf_data, ignore_index=True)
+
+    sns.scatterplot(
+        data=rcdf_df, x=x_col, y="reverse_cdf", hue="model", ax=ax,
+        legend=(label == "C"),
+        edgecolor = "none",
+        hue_order = [r"KC", r"BC ($\alpha = 1.1$)"],
+        palette = [sns.color_palette()[5], sns.color_palette()[3]],
+        s = 5 
     )
 
-    ax.text(-0.1, 1.1, label, transform=ax.transAxes, 
+    if label == "C":
+        handles, labels = ax.get_legend_handles_labels()
+        new_handles = [
+            Line2D(
+                [0], [0],
+                marker='o',
+                color='w',
+                label=label,
+                markerfacecolor=handle.get_markerfacecolor(),
+                markersize=(28**0.5),
+                linestyle='None'
+            )
+            for handle, label in zip(handles, labels)
+        ]
+
+        ax.legend(handles=new_handles, labels=labels, title="model")
+
+    ax.text(-0.1, 1.1, rf"$\textbf{{{label}}}$", transform=ax.transAxes, 
             fontweight="bold", va="top", ha="left")
 
-    ax.set_xlim(-0.01, 0.61)
-    ax.set_ylim(0.00, 0.53)
+    # ax.set_xlim(-0.01, 0.61)
+    ax.set_ylim(-0.01, 1.01)
     ax.set_title(title)
     ax.set_xlabel("")
     ax.set_ylabel("")
     if ax != axes["A"]:
         ax.set_yticklabels([])
 
-for ax, cdf in zip([axes["a"], axes["b"], axes["c"]], cdfs):
+for label, cdf in zip(["a", "b", "c"], cdfs):
+    ax = axes[label]
 
-    bins = 40
-    if ax == axes["c"]:
-        bins = 30
     sns.histplot(
         data=cdf, x=cdf.columns[0], bins=30, hue="model", stat="probability",
-        multiple="layer", ax=ax, legend = False
+        multiple="layer", ax=ax, legend = False, alpha = 0.5, palette = [sns.color_palette()[5], sns.color_palette()[3]]
     )
 
     ax.set_yscale("log")
@@ -99,7 +131,6 @@ for ax, cdf in zip([axes["a"], axes["b"], axes["c"]], cdfs):
     ax.tick_params(axis='y', which='major', labelsize=6)
     if ax != axes["a"]:
         ax.set_yticklabels([])
-
 
 fig.text(0.5, 0.07, "$\\bar r_d$", ha="center")
 fig.text(0.09, 0.5, "Probability", va="center", rotation="vertical")
