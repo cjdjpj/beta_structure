@@ -7,10 +7,10 @@ np.set_printoptions(legacy='1.25')
 
 ###
 save_fig = False
-run_index = "r001"
+run_index = "r002"
 ###
 
-input_path = "runs_full/" + run_index
+input_path = "runs/" + run_index
 
 with open(input_path + ".json", "r") as file:
     params = json.load(file)
@@ -25,6 +25,7 @@ with open(input_path + "_dist", "rb") as file:
 frac_clonal, clonal_tmrca = zip(*clonal_tmrca)
 frac_clonal = np.array(frac_clonal)
 clonal_tmrca = np.array(clonal_tmrca)
+dist = np.array(dist)
 
 tmrca = dist/(params["mu"]*2)
 
@@ -38,13 +39,14 @@ print("Average pi of recomb regions: ", np.mean(recombinant_pi))
 
 recomb_status = [
     "Fully recombined" if frac == 0 
-    else "Partially recombined"
+    else "Partially recombined" if 0 < frac < 1 
+    else "Fully clonal" 
     for frac in frac_clonal
 ]
 
 ### PAIRWISE DISTANCE HISTOGRAM
 plt.figure(figsize = (6,6))
-sns.histplot(x=recombinant_pi, stat='probability', bins=160, multiple = "stack", hue_order = ["Partially recombined", "Fully recombined"])
+sns.histplot(x=recombinant_pi, stat='probability', bins=160, multiple = "stack", hue = recomb_status, hue_order = ["Partially recombined", "Fully recombined", "Fully clonal"])
 plt.xlabel("Diversity of recombined regions")
 plt.ylabel("Frequency")
 rho = params["r_m"] * params["track_length"] * params["pi"]

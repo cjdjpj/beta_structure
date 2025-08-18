@@ -5,10 +5,10 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 ###
-run_index = "r001"
+run_index = "234"
 ###
 
-input_path = "runs/" + run_index
+input_path = "runs_structured/" + run_index
 
 with open(input_path + ".json", "r") as file:
     params = json.load(file)

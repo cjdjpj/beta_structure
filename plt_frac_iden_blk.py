@@ -6,11 +6,12 @@ import matplotlib.pyplot as plt
 
 ###
 save_fig = False
-run_index = "r001"
+run_index = "r008"
 ###
 
 input_path = "runs/" + run_index
-blk_size = 1000 # for analytical prediction
+input_path = "output"
+blk_size = 10 # for analytical prediction
 
 with open(input_path + ".json", "r") as file:
     params = json.load(file)
@@ -52,12 +53,21 @@ n_y = -1/blk_size * np.log(n_x)
 g.ax_joint.plot(n_x, n_y, color='grey', linestyle='--')
 
 ## RECOMBINANT LINE
-def expected_dist(frac_iden):
-    mu = params["mu"]
-    r_m = params["r_m"]
-    t = params["track_length"]
-    R = r_m * mu * t
-    return avg_dist * (1 - pow(frac_iden, R / (R + mu * blk_size)))
+def expected_dist(f):
+    mu     = params["mu"]
+    r_m    = params["r_m"]
+    t      = params["track_length"]
+
+    # per base rate of replacement by recombination
+    R = r_m * mu * (t) * np.exp(-blk_size/t)
+
+    denom = R + mu * blk_size
+
+    # recombination‐driven divergence + clonal (mutational) divergence
+    term_recomb = avg_dist * (1 - f**(R/denom))
+    term_mut    = f**(R/denom) * (1 - f**(mu/denom))
+
+    return term_recomb + term_mut
 
 r_x = np.linspace(1e-10, 1, 1000)
 r_y = expected_dist(r_x)
@@ -65,7 +75,7 @@ g.ax_joint.plot(r_x, r_y, color='red', linestyle='--')
 
 ## labels
 g.set_axis_labels("Proportion of 1kb base blocks identical", 
-                  "Pairwise mean number of nucleotide differences (Nei's pi)", 
+                  "Pairwise mean number of nucleotide differences", 
                   fontsize=12)
 rho = params["r_m"] * params["track_length"] * params["pi"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 

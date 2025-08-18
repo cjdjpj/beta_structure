@@ -18,7 +18,7 @@ plt.rcParams.update({
 })
 
 save_fig = True
-run_indices = ["119", "234", "151", "unstructured_beta"]
+run_indices = ["119", "156", "151", "unstructured_beta"]
 
 def load_run(run_index):
     input_path = "runs_structured/" + run_index

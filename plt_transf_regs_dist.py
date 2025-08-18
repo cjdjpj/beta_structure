@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 np.set_printoptions(legacy='1.25')
 
 ###
-run_index = "r001"
+run_index = "r002"
 ###
 
 input_path = "runs/" + run_index

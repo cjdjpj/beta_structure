@@ -10,10 +10,10 @@ plt.style.use('science')
 
 ###
 save_fig = False
-run_index = "r001"
+run_index = "212"
 ###
 
-input_path = "runs/" + run_index
+input_path = "runs_structured/" + run_index
 
 with open(input_path + ".json", "r") as file:
     params = json.load(file)
@@ -52,7 +52,7 @@ recomb_status = [
 ### PAIRWISE DISTANCE HISTOGRAM
 plt.figure(figsize = (4,4))
 sns.histplot(x=dist, stat='probability', hue = recomb_status, bins=160, multiple = "stack", hue_order = ["Partially recombined", "Fully recombined", "Fully clonal"])
-plt.xlabel("Pairwise mean number of nucleotide differences (Nei's pi)")
+plt.xlabel("Pairwise mean number of nucleotide differences")
 plt.ylabel("Frequency")
 if os.path.exists(input_path + "_rd"):
     plt.text(0.05, 0.75, f"$\\bar r_d$ = {r_d:.3f}", transform=plt.gca().transAxes,

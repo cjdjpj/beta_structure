@@ -10,10 +10,10 @@ from sklearn.manifold import TSNE
 
 ###
 save_fig = False
-run_index = "r001"
+run_index = "62"
 ###
 
-input_path = "runs/" + run_index
+input_path = "runs_structured/" + run_index
 
 with open(input_path + ".json", "r") as file:
     params = json.load(file)
@@ -31,7 +31,7 @@ print("Average pi:", avg_dist)
 plt.figure(figsize = (6,6))
 sns.histplot(dist, stat='probability', bins=100)
 plt.axvline(x = avg_dist, color = 'red', alpha = 0.3, label = "Average $\\pi$")
-plt.xlabel("Pairwise mean number of nucleotide differences (Nei's pi)")
+plt.xlabel("Pairwise mean number of nucleotide differences")
 plt.ylabel("Frequency")
 plt.text(0.05, 0.8, f"$\\bar r_d$ = {r_d:.3f}", transform=plt.gca().transAxes,
          fontsize=9, verticalalignment='top')

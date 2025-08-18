@@ -75,7 +75,7 @@ for run_index, ax, r_m in zip(run_indices, ["A", "B", "C", "D"], ["0.0", "0.01",
     axes[ax].set_title("$\\rho/\\mu = $" + r_m)
     axes[ax].set_xlim(0, 26)
 
-fig.text(0.1, 0.5, "Entropy of the n-SNP distribution", va="center", rotation="vertical")
+fig.text(0.1, 0.5, "Entropy of n-SNP distribution", va="center", rotation="vertical")
 fig.subplots_adjust(left=0.15, bottom=0.15)
 
 plt.show()
