@@ -18,7 +18,7 @@ plt.rcParams.update({
 })
 
 save_fig = True
-run_indices = ["156", "234", "151", "77"]
+run_indices = ["119", "234", "151", "unstructured_beta"]
 
 def load_run(run_index):
     input_path = "runs_structured/" + run_index
@@ -30,20 +30,18 @@ def load_run(run_index):
         dist = pickle.load(file)
         dist = np.array(dist)
 
-    with open(input_path + "_rd", "r") as file:
-        r_d = float(file.read())
-
     with open(input_path + "_frac_clonal", "rb") as file:
         clonal_tmrca = pickle.load(file)
 
     frac_clonal, clonal_tmrca = map(np.array, zip(*clonal_tmrca))
     clonal_tmrca = np.array([0 if x is None else x for x in clonal_tmrca])
 
-    return dist, frac_clonal, clonal_tmrca, r_d, params
+    return dist, frac_clonal, clonal_tmrca, params
 
 # CREATE FIGURE
 fig, axes = plt.subplot_mosaic(
     [
+        ["A", "A", "B", "B", "C", "C", "D", "D"],
         ["A", "A", "B", "B", "C", "C", "D", "D"],
         ["a", "a", "b", "b", "c", "c", "d", "d"],
         ["a", "a", "b", "b", "c", "c", "d", "d"],
@@ -52,9 +50,12 @@ fig, axes = plt.subplot_mosaic(
     sharex = True
 )
 
+bin_edges = np.linspace(0, 0.036, 50)
+
 for label, run_index in zip(["A", "B", "C", "D"], run_indices):
-    dist, frac_clonal, clonal_tmrca, r_d, params = load_run(run_index)
+    dist, frac_clonal, clonal_tmrca, params = load_run(run_index)
     ax = axes[label]
+
 
     recomb_status = [
         "Fully recombined" if frac == 0 
@@ -65,16 +66,16 @@ for label, run_index in zip(["A", "B", "C", "D"], run_indices):
 
     sns.histplot(
         x=dist, stat="probability", hue=recomb_status,
-        bins=40, multiple="stack", hue_order=["Partially\nrecombined", "Fully recombined", "Fully clonal"],
-        ax=ax, legend = False
+        bins=bin_edges, multiple="stack", hue_order=["Partially\nrecombined", "Fully recombined", "Fully clonal"],
+        ax=ax, legend = False,
     )
 
-    ax.text(-0.1, 1.15, rf"$\textbf{{{label}}}$", transform=ax.transAxes, 
+    ax.text(-0.1, 1.10, rf"$\textbf{{{label}}}$", transform=ax.transAxes, 
             fontweight="bold", va="top", ha="left")
     
     ax.xaxis.set_major_formatter(mticker.FormatStrFormatter("%.2f"))
     ax.yaxis.set_major_formatter(mticker.FormatStrFormatter("%.1f"))
-    ax.set_ylim(0, 0.25)
+    ax.set_ylim(0, 0.65)
     ax.set_xlabel("")
     ax.set_ylabel("")
     if label != "A":
@@ -82,7 +83,7 @@ for label, run_index in zip(["A", "B", "C", "D"], run_indices):
 
 for label, run_index in zip(["a", "b", "c", "d"], run_indices):
     ax = axes[label]
-    dist, frac_clonal, clonal_tmrca, r_d, params = load_run(run_index)
+    dist, frac_clonal, clonal_tmrca, params = load_run(run_index)
 
     recomb_status = [
         "Fully recombined" if frac == 0 
@@ -98,17 +99,20 @@ for label, run_index in zip(["a", "b", "c", "d"], run_indices):
     ax.set_ylabel("")
     if label != "a":
         ax.set_yticklabels([])
-    ax.set_ylim(0, 0.03)
+    ax.set_ylim(0, 0.04)
+    ax.set_xlim(0, 0.036)
 
     sns.scatterplot(x=dist, y=recombinant_pi, hue=recomb_status, ax=ax, 
                     hue_order=["Partially\nrecombined", "Fully recombined", "Fully clonal"],
                     legend= (label == "d"),
+                    linewidth=0.2,
                     s=22)
 
 sns.move_legend(axes["d"], "lower left")
-axes["a"].set_ylabel("Pairwise differences of recombined regions")
-axes["a"].set_yticks([0.00, 0.01, 0.02, 0.03])
-fig.text(0.5, 0.07, "Pairwise mean number of nucleotide differences", ha="center")
+axes["A"].set_ylabel("Probability")
+axes["a"].set_ylabel("$d$ of recombined regions")
+axes["a"].set_yticks([0.00, 0.01, 0.02, 0.03, 0.04])
+fig.text(0.5, 0.07, "$d$", ha="center")
 fig.subplots_adjust(left=0.15, bottom=0.15)
 
 if save_fig:

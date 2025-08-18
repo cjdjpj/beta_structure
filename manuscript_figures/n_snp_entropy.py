@@ -45,16 +45,16 @@ for label, run_path in zip(["A", "B", "C", "D"], run_paths):
     rho = params["r_m"] * params["track_length"] * params["pi"]
     alpha = params["alpha"]
     if label == "D":
-        ax.set_title(f"BC ($\\alpha = {alpha:.3g}, \\rho = {rho:.3g}$)")
+        ax.set_title(f"3C\nBeta ($\\alpha = {alpha:.3g}, \\rho = {rho:.3g}$)")
     else:
-        ax.set_title(f"KC ($\\rho$ = {rho:.3g})")
+        ax.set_title(f"Kingman ($\\rho$ = {rho:.3g})")
 
     ax.set_xlim(0, 25)
 
     ax.text(-0.1, 1.1, rf"$\textbf{{{label}}}$", transform=ax.transAxes, 
             fontweight="bold", va="top", ha="left")
 
-fig.text(0.1, 0.5, "Entropy of the n-SNP distribution (bits)", va="center", rotation="vertical")
+fig.text(0.1, 0.5, "Entropy of n-SNP distribution (bits)", va="center", rotation="vertical")
 fig.text(0.5, 0.00, "Number of strains n", ha="center")
 fig.subplots_adjust(left=0.15, bottom=0.15)
 

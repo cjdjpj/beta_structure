@@ -112,7 +112,7 @@ for label, run_index in zip(["A", "B", "C", "D"], run_indices):
 
 sns.move_legend(axes["D"], "lower left")
 
-fig.text(0.5, 0.00, "Pairwise mean number of nucleotide differences", ha="center")
+fig.text(0.5, 0.00, "$d$", ha="center")
 fig.subplots_adjust(left=0.15, bottom=0.15)
 
 if save_fig:

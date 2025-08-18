@@ -22,41 +22,47 @@ save_fig = True
 file_stem2 = "kingman_0.0"
 file_stem3 = "kingman_0.01"
 file_stem4 = "kingman_0.1"
+file_stem5 = "kingman_0.3"
 file_stem6 = "beta1.1_0.0"
 file_stem7 = "beta1.1_0.01"
 file_stem8 = "beta1.1_0.1"
+file_stem9 = "beta1.1_0.3"
 ###
 
 dir = "runs_mass/"
 df2 = pd.read_csv(dir + file_stem2 + ".csv", header=None)
 df3 = pd.read_csv(dir + file_stem3 + ".csv", header=None)
 df4 = pd.read_csv(dir + file_stem4 + ".csv", header=None)
+df5 = pd.read_csv(dir + file_stem5 + ".csv", header=None)
 df6 = pd.read_csv(dir + file_stem6 + ".csv", header=None)
 df7 = pd.read_csv(dir + file_stem7 + ".csv", header=None)
 df8 = pd.read_csv(dir + file_stem8 + ".csv", header=None)
+df9 = pd.read_csv(dir + file_stem9 + ".csv", header=None)
 
-df2["model"] = r"KC"
-df3["model"] = r"KC"
-df4["model"] = r"KC"
-df6["model"] = r"BC ($\alpha = 1.1$)"
-df7["model"] = r"BC ($\alpha = 1.1$)"
-df8["model"] = r"BC ($\alpha = 1.1$)"
+df2["model"] = r"Kingman"
+df3["model"] = r"Kingman"
+df4["model"] = r"Kingman"
+df5["model"] = r"Kingman"
+df6["model"] = r"Beta ($\alpha = 1.1$)"
+df7["model"] = r"Beta ($\alpha = 1.1$)"
+df8["model"] = r"Beta ($\alpha = 1.1$)"
+df9["model"] = r"Beta ($\alpha = 1.1$)"
 
 cdf1 = pd.concat([df2, df6], ignore_index=True)
 cdf2 = pd.concat([df3, df7], ignore_index=True)
 cdf3 = pd.concat([df4, df8], ignore_index=True)
-cdfs = [cdf1, cdf2, cdf3]
+cdf4 = pd.concat([df5, df9], ignore_index=True)
+cdfs = [cdf1, cdf2, cdf3, cdf4]
 
-titles = [r"$\rho = 0$", r"$\rho = 1.5$", r"$\rho = 15$"]
+titles = [r"$\rho = 0$", r"$\rho = 1.5$", r"$\rho = 15$", r"$\rho = 45$"]
 
 # CREATE FIGURE
 fig, axes = plt.subplot_mosaic(
     [
-        ["A", "A", "B", "B", "C", "C"],
-        ["A", "A", "B", "B", "C", "C"],
-        ["a", "a", "b", "b", "c", "c"],
+        ["A", "A", "B", "B", "C", "C", "D", "D"],
+        ["A", "A", "B", "B", "C", "C", "D", "D"],
     ],
-    figsize = (6, 3),
+    figsize = (8, 2),
     sharex = True
 )
 
@@ -82,9 +88,9 @@ for label, cdf, title, in zip(["A", "B", "C", "D"], cdfs, titles):
         data=rcdf_df, x=x_col, y="reverse_cdf", hue="model", ax=ax,
         legend=(label == "C"),
         edgecolor = "none",
-        hue_order = [r"KC", r"BC ($\alpha = 1.1$)"],
+        hue_order = [r"Kingman", r"Beta ($\alpha = 1.1$)"],
         palette = [sns.color_palette()[5], sns.color_palette()[3]],
-        s = 5 
+        s = 7 
     )
 
     if label == "C":
@@ -107,32 +113,59 @@ for label, cdf, title, in zip(["A", "B", "C", "D"], cdfs, titles):
     ax.text(-0.1, 1.1, rf"$\textbf{{{label}}}$", transform=ax.transAxes, 
             fontweight="bold", va="top", ha="left")
 
-    # ax.set_xlim(-0.01, 0.61)
-    ax.set_ylim(-0.01, 1.01)
+    if label == "D":
+        beta_df = rcdf_df[rcdf_df["model"] == r"Beta ($\alpha = 1.1$)"]
+
+        x_target = 0.19266891593655422
+        y_target = np.interp(x_target, beta_df[x_col], beta_df["reverse_cdf"])
+
+        ax.annotate(
+            '3A',
+            xy=(x_target, y_target),
+            xytext=(x_target + 0.12, y_target),
+            arrowprops=dict(arrowstyle="->")
+        )
+
+        x_target_B = 0.05004612431730401
+        y_target_B = np.interp(x_target_B, beta_df[x_col], beta_df["reverse_cdf"])
+        ax.annotate(
+            '3B',
+            xy=(x_target_B, y_target_B),
+            xytext=(x_target_B + 0.12, y_target_B), 
+            arrowprops=dict(arrowstyle="->")
+        )
+
+        x_target = 0.018684100087102164
+        y_target = np.interp(x_target, beta_df[x_col], beta_df["reverse_cdf"])
+
+        ax.annotate(
+            '3C',
+            xy=(x_target, y_target),
+            xytext=(x_target + 0.12, y_target + 0.004),
+            arrowprops=dict(arrowstyle="->")
+        )
+
+        x_target = 0.00048520895413102106
+        y_target = np.interp(x_target, beta_df[x_col], beta_df["reverse_cdf"])
+
+        ax.annotate(
+            '3D',
+            xy=(x_target, y_target),
+            xytext=(x_target + 0.12, y_target),
+            arrowprops=dict(arrowstyle="->")
+        )
+
+    ax.set_xlim(0.0, 0.69)
+    # ax.set_ylim(-0.01, 1.01)
+    ax.set_yscale("log")
     ax.set_title(title)
     ax.set_xlabel("")
     ax.set_ylabel("")
     if ax != axes["A"]:
         ax.set_yticklabels([])
 
-for label, cdf in zip(["a", "b", "c"], cdfs):
-    ax = axes[label]
-
-    sns.histplot(
-        data=cdf, x=cdf.columns[0], bins=30, hue="model", stat="probability",
-        multiple="layer", ax=ax, legend = False, alpha = 0.5, palette = [sns.color_palette()[5], sns.color_palette()[3]]
-    )
-
-    ax.set_yscale("log")
-    ax.set_xlim(-0.01, 0.61)
-    ax.set_ylim(3e-4, 0.99)
-    ax.set_xlabel("")
-    ax.set_ylabel("")
-    ax.tick_params(axis='y', which='major', labelsize=6)
-    if ax != axes["a"]:
-        ax.set_yticklabels([])
-
-fig.text(0.5, 0.07, "$\\bar r_d$", ha="center")
+sns.move_legend(axes["C"], "upper right")
+fig.text(0.5, 0.00, "$\\bar r_d$", ha="center")
 fig.text(0.09, 0.5, "Probability", va="center", rotation="vertical")
 fig.subplots_adjust(left=0.15, bottom=0.15)
 
