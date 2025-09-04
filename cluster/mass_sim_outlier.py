@@ -1,3 +1,4 @@
+import random
 import json
 import scipy
 import argparse
@@ -90,6 +91,9 @@ def pi(mts, pairs):
 
     return pi
 
+ts_seed = random.randint(1, 2**31 - 1)
+mts_seed = random.randint(1, 2**31 - 1)
+
 ts = msprime.sim_ancestry(nsample,
                           model=model,
                           population_size=Ne,
@@ -97,22 +101,19 @@ ts = msprime.sim_ancestry(nsample,
                           sequence_length=l,
                           gene_conversion_rate=r,
                           gene_conversion_tract_length=t,
-                          additional_nodes=(
-                              msprime.NodeType.GENE_CONVERSION
-                          ),
-                              coalescing_segments_only=False,
+                          random_seed=ts_seed
                           )
 
-pairs = np.array(list(combinations(range(args.nsample), 2)))
-mts = msprime.sim_mutations(ts, rate=mu)
+mts = msprime.sim_mutations(ts, rate=mu, random_seed=mts_seed)
 
+pairs = np.array(list(combinations(range(args.nsample), 2)))
 computed_r_d = r_d(mts, pairs)
 
-if computed_r_d > 0.01:
-    mts.dump(args.output)
+if computed_r_d > 0.03:
+    print("saved: ", computed_r_d)
     params_dict = vars(args)
+    params_dict["ts_seed"] = ts_seed
+    params_dict["mts_seed"] = mts_seed
     with open(args.output + ".json", 'w') as metadata_file:
         json.dump(params_dict, metadata_file, indent=4)
-    with open(args.output + "_rd", 'w') as f:
-        f.write(str(computed_r_d))
 
