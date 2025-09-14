@@ -9,6 +9,7 @@ from scipy.spatial.distance import squareform
 import scienceplots
 
 plt.style.use("science")
+# plt.style.use(["science","nature"])
 plt.rcParams.update({
     "font.size": 10,
     "axes.titlesize": 10,

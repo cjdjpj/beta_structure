@@ -120,7 +120,7 @@ for label, cdf, title, in zip(["A", "B", "C", "D"], cdfs, titles):
         y_target = np.interp(x_target, beta_df[x_col], beta_df["reverse_cdf"])
 
         ax.annotate(
-            '3A',
+            '3D',
             xy=(x_target, y_target),
             xytext=(x_target + 0.12, y_target),
             arrowprops=dict(arrowstyle="->")
@@ -129,7 +129,7 @@ for label, cdf, title, in zip(["A", "B", "C", "D"], cdfs, titles):
         x_target_B = 0.05004612431730401
         y_target_B = np.interp(x_target_B, beta_df[x_col], beta_df["reverse_cdf"])
         ax.annotate(
-            '3B',
+            '3C',
             xy=(x_target_B, y_target_B),
             xytext=(x_target_B + 0.12, y_target_B), 
             arrowprops=dict(arrowstyle="->")
@@ -139,7 +139,7 @@ for label, cdf, title, in zip(["A", "B", "C", "D"], cdfs, titles):
         y_target = np.interp(x_target, beta_df[x_col], beta_df["reverse_cdf"])
 
         ax.annotate(
-            '3C',
+            '3B',
             xy=(x_target, y_target),
             xytext=(x_target + 0.12, y_target + 0.004),
             arrowprops=dict(arrowstyle="->")
@@ -149,7 +149,7 @@ for label, cdf, title, in zip(["A", "B", "C", "D"], cdfs, titles):
         y_target = np.interp(x_target, beta_df[x_col], beta_df["reverse_cdf"])
 
         ax.annotate(
-            '3D',
+            '3A',
             xy=(x_target, y_target),
             xytext=(x_target + 0.12, y_target),
             arrowprops=dict(arrowstyle="->")

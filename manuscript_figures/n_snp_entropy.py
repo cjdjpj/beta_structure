@@ -45,7 +45,7 @@ for label, run_path in zip(["A", "B", "C", "D"], run_paths):
     rho = params["r_m"] * params["track_length"] * params["pi"]
     alpha = params["alpha"]
     if label == "D":
-        ax.set_title(f"3C\nBeta ($\\alpha = {alpha:.3g}, \\rho = {rho:.3g}$)")
+        ax.set_title(f"3B\nBeta ($\\alpha = {alpha:.3g}, \\rho = {rho:.3g}$)")
     else:
         ax.set_title(f"Kingman ($\\rho$ = {rho:.3g})")
 

@@ -8,6 +8,7 @@ from matplotlib.lines import Line2D
 import scienceplots
 
 plt.style.use("science")
+# plt.style.use(["science","nature"])
 plt.rcParams.update({
     "font.size": 10,
     "axes.titlesize": 10,
@@ -138,7 +139,7 @@ axes["C"].set_xlabel("")
 axes["C"].set_xticks([])
 
 alpha = params["alpha"]
-fig.text(0.63, 0.91, f"3C\nBeta ($\\alpha = {alpha:.3g}, \\rho = {rho:.3g}$)", ha="center")
+fig.text(0.63, 0.91, f"3B\nBeta ($\\alpha = {alpha:.3g}, \\rho = {rho:.3g}$)", ha="center")
 fig.text(0.5, -0.01, "Fraction of 1 kb blocks identical", ha="center")
 fig.text(0.06, 0.5, "$d$", rotation="vertical", va="center")
 
