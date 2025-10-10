@@ -9,7 +9,6 @@ from scipy.spatial.distance import squareform
 import scienceplots
 
 plt.style.use("science")
-# plt.style.use(["science","nature"])
 plt.rcParams.update({
     "font.size": 10,
     "axes.titlesize": 10,
@@ -59,7 +58,7 @@ fig, axes = plt.subplot_mosaic(
         ["A", "A", "B", "B", "C", "C", "D", "D"],
     ],
     figsize = (8, 2),
-    sharey = True
+    sharey = True,
 )
 
 # SUBPLOTS A-D
@@ -103,7 +102,7 @@ for label, run_index in zip(["A", "B", "C", "D"], run_indices):
             verticalalignment="top")
     
     # subplot title/labels
-    rho = params["r_m"] * params["track_length"] * params["pi"]
+    rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
     ax.set_title(f"$\\rho = {rho:.4g}$")
     ax.set_xlabel("")
     if ax != axes["A"]:

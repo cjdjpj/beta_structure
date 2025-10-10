@@ -8,7 +8,6 @@ from matplotlib.lines import Line2D
 import scienceplots
 
 plt.style.use("science")
-# plt.style.use(["science","nature"])
 plt.rcParams.update({
     "font.size": 10,
     "axes.titlesize": 10,
@@ -29,11 +28,11 @@ blk_size = 1000 # for analytical prediction
 ## RECOMBINANT LINE
 def expected_dist(f, avg_d):
     mu     = params["mu"]
-    r_m    = params["r_m"]
+    r      = params["r"]
     t      = params["track_length"]
 
     # per base rate of replacement by recombination
-    R = r_m * mu * (t) * np.exp(-blk_size/t)
+    R = r * (t) * np.exp(-blk_size/t)
 
     denom = R + mu * blk_size
 
@@ -73,7 +72,7 @@ for kingman_index, color in zip(kingman_indices, [sns.color_palette()[6], sns.co
     avg_dist = np.mean(dist)
 
     # simulation points
-    rho = params["r_m"] * params["track_length"] * params["pi"]
+    rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
     sns.scatterplot(x=frac_iden_blk, y=dist,
                     ax=axes["A"],
                     s=8, 

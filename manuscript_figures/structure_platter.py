@@ -4,6 +4,8 @@ import pickle
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
+from sklearn.manifold import MDS
+from scipy.spatial.distance import squareform
 import scienceplots
 
 plt.style.use("science")
@@ -18,7 +20,7 @@ plt.rcParams.update({
 })
 
 save_fig = True
-run_indices = ["unstructured_beta", "151", "156", "119"]
+run_indices = ["unstructured_beta", "151", "119"]
 
 def load_run(run_index):
     input_path = "runs_structured/" + run_index
@@ -33,29 +35,10 @@ def load_run(run_index):
     with open(input_path + "_frac_clonal", "rb") as file:
         clonal_tmrca = pickle.load(file)
 
+    with open(input_path + "_rd", "r") as file:
+        r_d = float(file.read())
+
     frac_clonal, clonal_tmrca = map(np.array, zip(*clonal_tmrca))
-    clonal_tmrca = np.array([0 if x is None else x for x in clonal_tmrca])
-
-    return dist, frac_clonal, clonal_tmrca, params
-
-# CREATE FIGURE
-fig, axes = plt.subplot_mosaic(
-    [
-        ["A", "A", "B", "B", "C", "C", "D", "D"],
-        ["A", "A", "B", "B", "C", "C", "D", "D"],
-        ["a", "a", "b", "b", "c", "c", "d", "d"],
-        ["a", "a", "b", "b", "c", "c", "d", "d"],
-    ],
-    figsize = (8, 4),
-    sharex = True
-)
-
-bin_edges = np.linspace(0, 0.036, 50)
-
-for label, run_index in zip(["A", "B", "C", "D"], run_indices):
-    dist, frac_clonal, clonal_tmrca, params = load_run(run_index)
-    ax = axes[label]
-
 
     recomb_status = [
         "Fully recombined" if frac == 0 
@@ -63,6 +46,56 @@ for label, run_index in zip(["A", "B", "C", "D"], run_indices):
         else "Fully clonal" 
         for frac in frac_clonal
     ]
+
+    return dist, recomb_status, r_d, params
+
+# CREATE FIGURE
+fig, axes = plt.subplot_mosaic(
+    [
+        ["A", "A", "B", "B", "C", "C"],
+        ["A", "A", "B", "B", "C", "C"],
+    ],
+    figsize = (6, 2),
+    sharex = True
+)
+
+bin_edges = np.linspace(0, 0.036, 40)
+
+for label, run_index in zip(["A", "B", "C"], run_indices):
+    dist, recomb_status, r_d, params = load_run(run_index)
+    ax = axes[label]
+
+    ### inset PCA & r_d value
+
+    if label == "C":
+        inset_ax = ax.inset_axes([0.60, 0.50, 0.35, 0.35])
+        ax.text(0.50, 0.95, f"$\\bar r_d$ = {r_d:.3f}", transform=ax.transAxes,
+                verticalalignment="top")
+    else:
+        inset_ax = ax.inset_axes([0.05, 0.50, 0.35, 0.35])
+        ax.text(0.05, 0.95, f"$\\bar r_d$ = {r_d:.3f}", transform=ax.transAxes,
+                verticalalignment="top")
+    dist_matrix = squareform(dist)
+
+    mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42)
+    mds_coords = mds.fit_transform(dist_matrix)
+
+    jitter_strength = 0.0005
+    jittered_coords = mds_coords + np.random.normal(loc=0, scale=jitter_strength, size=mds_coords.shape)
+
+    sns.scatterplot(x=jittered_coords[:, 0], y=jittered_coords[:, 1],
+                    ax=inset_ax, color=sns.color_palette()[5],
+                    edgecolor="white", linewidth=0.2, s=12)
+
+    inset_ax.set_ylim(-0.04, 0.04)
+    inset_ax.set_ylim(-0.026, 0.026)
+
+    inset_ax.set_xticklabels([])
+    inset_ax.set_yticklabels([])
+    inset_ax.set_xlabel("")
+    inset_ax.set_ylabel("")
+
+    ## main histogram
 
     sns.histplot(
         x=dist, stat="probability", hue=recomb_status,
@@ -75,44 +108,18 @@ for label, run_index in zip(["A", "B", "C", "D"], run_indices):
     
     ax.xaxis.set_major_formatter(mticker.FormatStrFormatter("%.2f"))
     ax.yaxis.set_major_formatter(mticker.FormatStrFormatter("%.1f"))
-    ax.set_ylim(0, 0.65)
+    ax.set_ylim(0, 0.75)
     ax.set_xlabel("")
     ax.set_ylabel("")
     if label != "A":
         ax.set_yticklabels([])
 
-for label, run_index in zip(["a", "b", "c", "d"], run_indices):
-    ax = axes[label]
-    dist, frac_clonal, clonal_tmrca, params = load_run(run_index)
+    rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
+    ax.set_title(f"$\\rho = {rho:.4g}$")
 
-    recomb_status = [
-        "Fully recombined" if frac == 0 
-        else "Partially\nrecombined" if 0 < frac < 1 
-        else "Fully clonal" 
-        for frac in frac_clonal
-    ]
 
-    tmrca = dist/(params["mu"]*2)
-    recombinant_tmrca = (tmrca - np.multiply(frac_clonal, clonal_tmrca))/(1-frac_clonal)
-    recombinant_pi = recombinant_tmrca * params["mu"] * 2
-
-    ax.set_ylabel("")
-    if label != "a":
-        ax.set_yticklabels([])
-    ax.set_ylim(0, 0.04)
-    ax.set_xlim(0, 0.036)
-
-    sns.scatterplot(x=dist, y=recombinant_pi, hue=recomb_status, ax=ax, 
-                    hue_order=["Partially\nrecombined", "Fully recombined", "Fully clonal"],
-                    legend= (label == "d"),
-                    linewidth=0.2,
-                    s=22)
-
-sns.move_legend(axes["d"], "lower left")
 axes["A"].set_ylabel("Probability")
-axes["a"].set_ylabel("$d$ of recombined regions")
-axes["a"].set_yticks([0.00, 0.01, 0.02, 0.03, 0.04])
-fig.text(0.5, 0.07, "$d$", ha="center")
+fig.text(0.5, 0.00, "$d$", ha="center")
 fig.subplots_adjust(left=0.15, bottom=0.15)
 
 if save_fig:

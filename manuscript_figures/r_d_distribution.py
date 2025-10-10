@@ -20,13 +20,13 @@ save_fig = True
 
 ###
 file_stem2 = "kingman_0.0"
-file_stem3 = "kingman_0.01"
-file_stem4 = "kingman_0.1"
-file_stem5 = "kingman_0.3"
+file_stem3 = "kingman_1.5"
+file_stem4 = "kingman_15"
+file_stem5 = "kingman_45"
 file_stem6 = "beta1.1_0.0"
-file_stem7 = "beta1.1_0.01"
-file_stem8 = "beta1.1_0.1"
-file_stem9 = "beta1.1_0.3"
+file_stem7 = "beta1.1_1.5"
+file_stem8 = "beta1.1_15"
+file_stem9 = "beta1.1_45"
 ###
 
 dir = "runs_mass/"
@@ -55,6 +55,7 @@ cdf4 = pd.concat([df5, df9], ignore_index=True)
 cdfs = [cdf1, cdf2, cdf3, cdf4]
 
 titles = [r"$\rho = 0$", r"$\rho = 1.5$", r"$\rho = 15$", r"$\rho = 45$"]
+indiv_runs_arrow = ["runs_structured/unstructured_beta", "runs_structured/151", "runs_structured/119"]
 
 # CREATE FIGURE
 fig, axes = plt.subplot_mosaic(
@@ -65,7 +66,6 @@ fig, axes = plt.subplot_mosaic(
     figsize = (8, 2),
     sharex = True
 )
-
 
 for label, cdf, title, in zip(["A", "B", "C", "D"], cdfs, titles):
 
@@ -113,47 +113,22 @@ for label, cdf, title, in zip(["A", "B", "C", "D"], cdfs, titles):
     ax.text(-0.1, 1.1, rf"$\textbf{{{label}}}$", transform=ax.transAxes, 
             fontweight="bold", va="top", ha="left")
 
+    ### arrows to individual runs
     if label == "D":
         beta_df = rcdf_df[rcdf_df["model"] == r"Beta ($\alpha = 1.1$)"]
 
-        x_target = 0.19266891593655422
-        y_target = np.interp(x_target, beta_df[x_col], beta_df["reverse_cdf"])
+        for arrow_run, arrow_label in zip(indiv_runs_arrow, ["3A", "3B", "3C"]):
+            with open(arrow_run + "_rd", "r") as file:
+                arrow_r_d = float(file.read())
 
-        ax.annotate(
-            '3D',
-            xy=(x_target, y_target),
-            xytext=(x_target + 0.12, y_target),
-            arrowprops=dict(arrowstyle="->")
-        )
-
-        x_target_B = 0.05004612431730401
-        y_target_B = np.interp(x_target_B, beta_df[x_col], beta_df["reverse_cdf"])
-        ax.annotate(
-            '3C',
-            xy=(x_target_B, y_target_B),
-            xytext=(x_target_B + 0.12, y_target_B), 
-            arrowprops=dict(arrowstyle="->")
-        )
-
-        x_target = 0.018684100087102164
-        y_target = np.interp(x_target, beta_df[x_col], beta_df["reverse_cdf"])
-
-        ax.annotate(
-            '3B',
-            xy=(x_target, y_target),
-            xytext=(x_target + 0.12, y_target + 0.004),
-            arrowprops=dict(arrowstyle="->")
-        )
-
-        x_target = 0.00048520895413102106
-        y_target = np.interp(x_target, beta_df[x_col], beta_df["reverse_cdf"])
-
-        ax.annotate(
-            '3A',
-            xy=(x_target, y_target),
-            xytext=(x_target + 0.12, y_target),
-            arrowprops=dict(arrowstyle="->")
-        )
+            x_target = arrow_r_d
+            y_target = np.interp(x_target, beta_df[x_col], beta_df["reverse_cdf"])
+            ax.annotate(
+                arrow_label,
+                xy=(x_target, y_target),
+                xytext=(x_target + 0.12, y_target),
+                arrowprops=dict(arrowstyle="->")
+            )
 
     ax.set_xlim(0.0, 0.69)
     # ax.set_ylim(-0.01, 1.01)

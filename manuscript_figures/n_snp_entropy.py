@@ -17,7 +17,7 @@ plt.rcParams.update({
 
 ###
 n_vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 13, 15, 17, 19, 21, 23, 25]
-run_paths = ["runs/r001", "runs/r003", "runs/r008", "runs_structured/234"]  # interesting ones: 156, 234, 149
+run_paths = ["runs/r001", "runs/r003", "runs/r008", "runs_structured/151"]  # interesting ones: 156, 234, 149
 save_fig = True
 ###
 
@@ -42,7 +42,7 @@ for label, run_path in zip(["A", "B", "C", "D"], run_paths):
     for sample, values in sample_entropy_all_n.items():
         sns.lineplot(x=n_vals, y=values, label=sample, ax=ax, legend=False)
 
-    rho = params["r_m"] * params["track_length"] * params["pi"]
+    rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
     alpha = params["alpha"]
     if label == "D":
         ax.set_title(f"3B\nBeta ($\\alpha = {alpha:.3g}, \\rho = {rho:.3g}$)")
@@ -50,6 +50,7 @@ for label, run_path in zip(["A", "B", "C", "D"], run_paths):
         ax.set_title(f"Kingman ($\\rho$ = {rho:.3g})")
 
     ax.set_xlim(0, 25)
+    ax.set_ylim(0, 11)
 
     ax.text(-0.1, 1.1, rf"$\textbf{{{label}}}$", transform=ax.transAxes, 
             fontweight="bold", va="top", ha="left")
