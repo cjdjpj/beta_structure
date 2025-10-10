@@ -1,0 +1,11 @@
+{
+    "output": "runs_structured/119",
+    "length": 5000000,
+    "track_length": 5000,
+    "nsample": 100,
+    "mu": 0.025,
+    "KT_2": 0.6,
+    "r": 0.0075,
+    "model": "beta",
+    "alpha": 1.1
+}

@@ -1,0 +1,14 @@
+{
+    "output": "runs/r002",
+    "length": 5000000,
+    "track_length": 5000,
+    "nsample": 100,
+    "mu": 0.025,
+    "KT_2": 0.6,
+    "r": 0.00025,
+    "model": "kingman",
+    "alpha": null,
+    "seed": null,
+    "mut_seed": null,
+    "store_gc_nodes": true
+}
