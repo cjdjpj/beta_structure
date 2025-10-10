@@ -46,7 +46,7 @@ fig, axes = plt.subplot_mosaic(
     sharey = True
 )
 plt.ylim(0, 10)
-for run_index, ax, r_m in zip(run_indices, ["A", "B", "C", "D"], ["0.0", "0.01", "0.1", "0.3"]):
+for run_index, ax, rho in zip(run_indices, ["A", "B", "C", "D"], ["0.0", "1.5", "15", "45"]):
     sample_entropy_all_n = defaultdict(list)
 
     for n in n_vals:
@@ -72,7 +72,7 @@ for run_index, ax, r_m in zip(run_indices, ["A", "B", "C", "D"], ["0.0", "0.01",
 
     for label, values in sample_entropy_all_n.items():
         sns.lineplot(x=n_vals, y=values, label=label, ax = axes[ax], legend=False)
-    axes[ax].set_title("$\\rho/\\mu = $" + r_m)
+    axes[ax].set_title("$\\rho/ = $" + rho)
     axes[ax].set_xlim(0, 26)
 
 fig.text(0.1, 0.5, "Entropy of n-SNP distribution", va="center", rotation="vertical")

@@ -7,6 +7,6 @@
 
 srun python pair_segments.py \
     --input "runs_structured/151"\
-    --peak "first_peak"\
+    --peak 1\
     --num_pairs 1\
 

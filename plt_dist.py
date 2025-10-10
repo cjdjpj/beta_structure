@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import json
 import pickle 
@@ -10,10 +11,10 @@ from sklearn.manifold import TSNE
 
 ###
 save_fig = False
-run_index = "62"
+run_index = "r001"
 ###
 
-input_path = "runs_structured/" + run_index
+input_path = "runs/" + run_index
 
 with open(input_path + ".json", "r") as file:
     params = json.load(file)
@@ -21,8 +22,9 @@ print(json.dumps(params, indent = 4))
 
 with open(input_path + "_dist", "rb") as file:
     dist = pickle.load(file)
-with open(input_path + "_rd", "r") as file:
-    r_d = float(file.read())
+if os.path.exists(input_path + "_rd"):
+    with open(input_path + "_rd", "r") as file:
+        r_d = float(file.read())
 
 avg_dist = np.mean(dist)
 print("Average pi:", avg_dist)
@@ -33,9 +35,10 @@ sns.histplot(dist, stat='probability', bins=100)
 plt.axvline(x = avg_dist, color = 'red', alpha = 0.3, label = "Average $\\pi$")
 plt.xlabel("Pairwise mean number of nucleotide differences")
 plt.ylabel("Frequency")
-plt.text(0.05, 0.8, f"$\\bar r_d$ = {r_d:.3f}", transform=plt.gca().transAxes,
-         fontsize=9, verticalalignment='top')
-rho = params["r_m"] * params["track_length"] * params["pi"]
+if os.path.exists(input_path + "_rd"):
+    plt.text(0.05, 0.8, f"$\\bar r_d$ = {r_d:.3f}", transform=plt.gca().transAxes,
+             fontsize=9, verticalalignment='top')
+rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
 plt.title("Pairwise diversity histogram (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 plt.legend()
@@ -43,21 +46,6 @@ if save_fig:
     plt.savefig("../figures/runs/" + run_index + "_dist.png", dpi=300)
 else:
     plt.show()
-
-# ### ARITY
-# import tskit
-# mts = tskit.load(input_path)
-# max_value = (0, None)
-# for tree in mts.trees():
-#     arity = [
-#         (tree.num_children(node), int(tree.time(node))) for node in tree.nodes() if tree.num_children(node) > 1
-#     ]
-#     max_candidate = max(arity, key=lambda x: x[0])
-#     if max_candidate[0] > max_value[0]:
-#         max_value = max_candidate
-#         print(max_value)
-#
-# print(max_value)
 
 # ### PCA
 # dist_matrix = squareform(dist)
@@ -78,7 +66,7 @@ else:
 # plt.ylabel(f"PCA 2 ({pc2_var:.2f}%)")
 # plt.title(f"PCoA ({pc1_var+pc2_var:.2f}% variance explained) (" + run_index + ")")
 # plt.show()
-
+#
 # ### 3D PCA
 # pcoa_coords = pcoa_results.samples[['PC1', 'PC2', 'PC3']].values
 # variance_explained = pcoa_results.proportion_explained
@@ -98,7 +86,7 @@ else:
 # ax.set_title(f"3D PCoA ({pc1_var+pc2_var+pc3_var:.2f}% variance explained) ({run_index})")
 #
 # plt.show()
-
+#
 # ### Scree plot
 # components = 8
 # plt.figure(figsize=(6,6))

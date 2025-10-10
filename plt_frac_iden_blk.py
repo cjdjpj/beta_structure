@@ -6,12 +6,11 @@ import matplotlib.pyplot as plt
 
 ###
 save_fig = False
-run_index = "r008"
+run_index = "52"
 ###
 
-input_path = "runs/" + run_index
-input_path = "output"
-blk_size = 10 # for analytical prediction
+input_path = "runs_structured/" + run_index
+blk_size = 1000 # for analytical prediction
 
 with open(input_path + ".json", "r") as file:
     params = json.load(file)
@@ -41,6 +40,7 @@ g = sns.jointplot(
     height=6, 
     space=0,
     xlim=(0,1),
+    ylim=(0,0.065),
     marginal_kws={"bins": 160}
 )
 
@@ -55,11 +55,11 @@ g.ax_joint.plot(n_x, n_y, color='grey', linestyle='--')
 ## RECOMBINANT LINE
 def expected_dist(f):
     mu     = params["mu"]
-    r_m    = params["r_m"]
+    r      = params["r"]
     t      = params["track_length"]
 
     # per base rate of replacement by recombination
-    R = r_m * mu * (t) * np.exp(-blk_size/t)
+    R = r * (t) * np.exp(-blk_size/t)
 
     denom = R + mu * blk_size
 
@@ -77,7 +77,7 @@ g.ax_joint.plot(r_x, r_y, color='red', linestyle='--')
 g.set_axis_labels("Proportion of 1kb base blocks identical", 
                   "Pairwise mean number of nucleotide differences", 
                   fontsize=12)
-rho = params["r_m"] * params["track_length"] * params["pi"]
+rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
 g.figure.suptitle("Fraction of identical blocks vs distance (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 

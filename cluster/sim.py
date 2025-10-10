@@ -10,12 +10,12 @@ parser.add_argument('--output', type=str, default="output")
 parser.add_argument('--length', type=int, default=5000000)
 parser.add_argument('--track_length', type=int, default=5000)
 parser.add_argument('--nsample', type=int, default=100)
-parser.add_argument('--mu', type=float, default=0.025)
-parser.add_argument('--r_m', type=float, default=0.00)
-parser.add_argument('--model', type=str, default="kingman")
+parser.add_argument('--mu', type=float, default=0.015)
+parser.add_argument('--r', type=float, default=0.0)
+parser.add_argument('--KT_2', type=float, default=1.00)
+parser.add_argument('--model', type=str, default="beta")
 parser.add_argument('--alpha', type=float, default=None)
-parser.add_argument('--pi', type=float, default=0.03)
-parser.add_argument('--seed', type=int, default=None)
+parser.add_argument('--ts_seed', type=int, default=None)
 parser.add_argument('--mut_seed', type=int, default=None)
 parser.add_argument('--store_gc_nodes', action="store_true")
 
@@ -23,12 +23,13 @@ args = parser.parse_args()
 
 l = args.length  # number of genes
 t = args.track_length  # tract length
+r = args.r # recombination rate
 nsample = args.nsample  # the number of genomes sampled
 mu = args.mu  # mutation rate
-r_m = args.r_m # r/m
+KT_2 = args.KT_2  # time to coalescence in Kingman
 
-r = r_m * mu # per base recomb rate
-print("r  =",r)
+print("rho = ", 2 * r * KT_2 * t)
+print("pi = ", 2 * mu * KT_2)
 
 def T2(a, N):
     """Returns the expected pairwise coalescence time in a Beta coalescent"""
@@ -41,16 +42,17 @@ def n_beta(a, T2):
 
 if args.model == "kingman":
     model = None
-    Ne = args.pi/(2*mu)
+    Ne = KT_2
 
-elif  args.model == "beta":
+elif args.model == "beta":
     model = msprime.BetaCoalescent(alpha=args.alpha)
-    Ne = n_beta(args.alpha, args.pi/(2*mu))
+    Ne = n_beta(args.alpha, KT_2)
 
 else:
     raise ValueError(f"Invalid model argument: {args.model}")
 
-print("Ne =",Ne)
+
+print("Ne = ", Ne)
 
 kwargs = dict(
     samples=nsample,
@@ -60,7 +62,7 @@ kwargs = dict(
     sequence_length=l,
     gene_conversion_rate=r,
     gene_conversion_tract_length=t,
-    random_seed = args.seed
+    random_seed = args.ts_seed
 )
 
 if args.store_gc_nodes:

@@ -49,7 +49,7 @@ plt.figure(figsize = (6,6))
 sns.histplot(x=recombinant_pi, stat='probability', bins=160, multiple = "stack", hue = recomb_status, hue_order = ["Partially recombined", "Fully recombined", "Fully clonal"])
 plt.xlabel("Diversity of recombined regions")
 plt.ylabel("Frequency")
-rho = params["r_m"] * params["track_length"] * params["pi"]
+rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
 plt.title("Diversity of recombinant regions (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 if save_fig:

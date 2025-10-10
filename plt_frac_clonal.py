@@ -7,10 +7,10 @@ import matplotlib.pyplot as plt
 
 ###
 save_fig = False
-run_index = "r001"
+run_index = "151"
 ###
 
-input_path = "runs/" + run_index
+input_path = "runs_structured/" + run_index
 
 with open(input_path + ".json", "r") as file:
     params = json.load(file)
@@ -34,9 +34,9 @@ g = sns.jointplot(
 )
 
 mu = params["mu"]
-r_m = params["r_m"]
+r = params["r"]
 t = params["track_length"]
-R = r_m * mu * t
+R = r * t
 
 if R != 0:
     x = np.linspace(1e-3, 1, 100)
@@ -46,7 +46,7 @@ if R != 0:
 
 ## labels
 g.set_axis_labels("Proportion of genome", "Generations", fontsize=12)
-rho = params["r_m"] * params["track_length"] * params["pi"]
+rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
 g.figure.suptitle("Fraction of clonal interval vs clonal $T_{\\text{mrca}}$ (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 

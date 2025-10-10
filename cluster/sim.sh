@@ -9,7 +9,7 @@ srun python sim.py\
     --length 5000000\
     --track_length 5000\
     --nsample 100\
-    --mu 0.025\
-    --r_m 0.0\
+    --mu 0.015\
+    --r 0.0\
+    --KT_2 1.0\
     --model "kingman"\
-    --pi 0.03\

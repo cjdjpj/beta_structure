@@ -1,11 +1,8 @@
-import math
 import pickle
 import warnings
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from collections import defaultdict
-from collections import Counter
 warnings.filterwarnings("ignore")
 np.set_printoptions(legacy='1.25')
 import scienceplots
