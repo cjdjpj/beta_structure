@@ -1,0 +1,117 @@
+import scipy
+import argparse
+import msprime
+import numpy as np
+from itertools import combinations
+
+parser = argparse.ArgumentParser(
+                    prog='sim')
+parser.add_argument('--output', type=str, default="output")
+parser.add_argument('--length', type=int, default=5000000)
+parser.add_argument('--track_length', type=int, default=5000)
+parser.add_argument('--nsample', type=int, default=100)
+parser.add_argument('--mu', type=float, default=0.015)
+parser.add_argument('--r', type=float, default=0.00)
+parser.add_argument('--KT_2', type=float, default=1)
+parser.add_argument('--model', type=str, default="kingman")
+parser.add_argument('--alpha', type=float, default=None)
+
+args = parser.parse_args()
+
+l = args.length  # number of genes
+t = args.track_length  # tract length
+r = args.r # recombination rate
+nsample = args.nsample  # the number of genomes sampled
+mu = args.mu  # mutation rate
+KT_2 = args.KT_2  # time to coalescence in Kingman
+
+print("rho = ", 2 * r * KT_2 * t)
+print("pi = ", 2 * mu * KT_2)
+
+def T2(a, N):
+    """Returns the expected pairwise coalescence time in a Beta coalescent"""
+    return np.power(1 + 1 / np.exp2(a - 1) / (a - 1), a) * np.power(N, a - 1) / a / scipy.special.beta(2 - a, a)
+
+def n_beta(a, T2):
+    """Returns the N necessary to make a Beta coalescent with the given alpha = a have the specified pairwise coalescence time"""
+    """if returns 0, means N is unimportant. if returns inf, means T unattainable with given alpha"""
+    return ((T2 * a * scipy.special.beta(2 - a, a)) / ((1 + 1 / (2**(a - 1) * (a - 1)))**a))**(1 / (a - 1))
+
+if args.model == "kingman":
+    model = None
+    Ne = KT_2
+
+elif  args.model == "beta":
+    model = msprime.BetaCoalescent(alpha=args.alpha)
+    Ne = n_beta(args.alpha, KT_2)
+
+else:
+    raise ValueError(f"Invalid model argument: {args.model}")
+
+print("Ne =",Ne)
+
+def r_d(mts, pairs):
+    ### COMPUTE R_D (Agapow & Burt 2001)
+    gt = mts.genotype_matrix()
+    gt = gt[:100000, :]
+    m, n = gt.shape
+
+    pairs = np.array(list(combinations(range(n), 2)))
+
+    # compute hamming distances counts
+    a = gt[:, pairs[:, 0]]
+    b = gt[:, pairs[:, 1]]
+    dist = (a == b).astype(np.uint8)
+
+    # variance per loci
+    variances = np.var(dist, axis=1)
+
+    # sum of covariance of distances
+    def sum_covs(data):
+        n = data.shape[1]
+        means = data.mean(axis=1, keepdims=True)
+        Z = data - means                   
+        S = Z.sum(axis=0)                     
+        total_sum_all = np.dot(S, S)         
+        return total_sum_all / n
+
+    sqrt_variances = np.sqrt(variances)
+    sum_sqrt_variances = np.sum(sqrt_variances) ** 2
+
+    # r_d (Agapow & Burt 2001)
+    r_d = sum_covs(dist)/sum_sqrt_variances
+
+    return r_d
+
+ts = msprime.sim_ancestry(nsample,
+                          model=model,
+                          population_size=Ne,
+                          ploidy=1,
+                          sequence_length=l,
+                          gene_conversion_rate=r,
+                          gene_conversion_tract_length=t,
+                          )
+
+mts = msprime.sim_mutations(ts, rate=mu)
+
+pairs = np.array(list(combinations(range(args.nsample), 2)))
+
+### T OF LARGEST BURST
+# For populations which have a coalescent event with arity > MIN_ARITY
+# When is the event with largest arity?
+trees_to_check = 20
+min_arity = 2
+highest_arity = 0
+highest_arity_T = None
+c=0
+for tree in ts.trees():
+    if c > trees_to_check:
+        break
+    for node in tree.nodes():
+        if tree.num_children(node) >= min_arity and tree.num_children(node) > highest_arity:
+            highest_arity = tree.num_children(node)
+            highest_arity_T = tree.time(node)
+    c+=1
+
+with open(args.output, "w") as file:
+    file.write(str(highest_arity) + "," + str(highest_arity_T) + "," + str(r_d(mts,pairs)) + "\n")
