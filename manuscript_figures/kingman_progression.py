@@ -7,7 +7,6 @@ import matplotlib.ticker as mticker
 from sklearn.manifold import MDS
 from scipy.spatial.distance import squareform
 import scienceplots
-
 plt.style.use("science")
 plt.rcParams.update({
     "font.size": 10,
@@ -22,20 +21,31 @@ plt.rcParams.update({
 ###
 save_fig = True
 run_indices = ["r001", "r002", "r004", "r008"]
+recomb_status_palette = {
+    "Fully clonal": (1.0, 0.8784, 0.0),
+    "Partially\nrecombined": sns.color_palette()[1],
+    "Fully recombined": sns.color_palette()[0]
+}
 ###
+
+# CREATE FIGURE
+fig, axes = plt.subplot_mosaic(
+    [
+        ["A", "A", "B", "B", "C", "C", "D", "D"],
+        ["A", "A", "B", "B", "C", "C", "D", "D"],
+    ],
+    figsize = (8, 2),
+    sharey = True,
+)
 
 def load_run(run_index):
     input_path = "runs/" + run_index
-
     with open(input_path + ".json", "r") as file:
         params = json.load(file)
-
     with open(input_path + "_dist", "rb") as file:
         dist = pickle.load(file)
-
     with open(input_path + "_rd", "r") as file:
         r_d = float(file.read())
-
     with open(input_path + "_frac_clonal", "rb") as file:
         clonal_tmrca = pickle.load(file)
 
@@ -51,16 +61,6 @@ def load_run(run_index):
 
     return dist, recomb_status, r_d, params
 
-# CREATE FIGURE
-fig, axes = plt.subplot_mosaic(
-    [
-        ["A", "A", "B", "B", "C", "C", "D", "D"],
-        ["A", "A", "B", "B", "C", "C", "D", "D"],
-    ],
-    figsize = (8, 2),
-    sharey = True,
-)
-
 # SUBPLOTS A-D
 for label, run_index in zip(["A", "B", "C", "D"], run_indices):
     ax = axes[label]
@@ -69,11 +69,12 @@ for label, run_index in zip(["A", "B", "C", "D"], run_indices):
 
     sns.histplot(
         x=dist, stat="probability", hue=recomb_status,
-        bins=40, multiple="stack", hue_order=["Partially\nrecombined", "Fully recombined", "Fully clonal"],
+        bins=40, multiple="stack", hue_order=["Fully clonal", "Partially\nrecombined", "Fully recombined"],
+        palette=recomb_status_palette,
         ax=ax, legend = (label == "D")
     )
 
-    ### inset PCA
+    ### inset MDS
     inset_ax = ax.inset_axes([0.05, 0.45, 0.35, 0.35])
     dist_matrix = squareform(dist)
 
@@ -112,7 +113,7 @@ for label, run_index in zip(["A", "B", "C", "D"], run_indices):
 
 sns.move_legend(axes["D"], "lower left")
 
-fig.text(0.5, 0.00, "$d$", ha="center")
+fig.text(0.5, 0.00, "Pairwise genetic distance ($d$)", ha="center")
 fig.subplots_adjust(left=0.15, bottom=0.15)
 
 if save_fig:

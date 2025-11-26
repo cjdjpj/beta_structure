@@ -4,7 +4,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import scienceplots
-
 plt.style.use("science")
 plt.rcParams.update({
     "font.size": 10,
@@ -16,9 +15,8 @@ plt.rcParams.update({
     "figure.titlesize": 10,
 })
 
-save_fig = True
-
 ###
+save_fig = True
 file_stem2 = "kingman_0.0"
 file_stem3 = "kingman_1.5"
 file_stem4 = "kingman_15"
@@ -60,12 +58,20 @@ indiv_runs_arrow = ["runs_structured/unstructured_beta", "runs_structured/151", 
 # CREATE FIGURE
 fig, axes = plt.subplot_mosaic(
     [
-        ["A", "A", "B", "B", "C", "C", "D", "D"],
-        ["A", "A", "B", "B", "C", "C", "D", "D"],
+        ["A","A","A","A","B","B","B","B",".","E","E","E","E","E","E","E"],
+        ["A","A","A","A","B","B","B","B",".","E","E","E","E","E","E","E"],
+        ["A","A","A","A","B","B","B","B",".","E","E","E","E","E","E","E"],
+        ["A","A","A","A","B","B","B","B",".","E","E","E","E","E","E","E"],
+        ["C","C","C","C","D","D","D","D",".","E","E","E","E","E","E","E"],
+        ["C","C","C","C","D","D","D","D",".","E","E","E","E","E","E","E"],
+        ["C","C","C","C","D","D","D","D",".","E","E","E","E","E","E","E"],
+        ["C","C","C","C","D","D","D","D",".","E","E","E","E","E","E","E"]
     ],
-    figsize = (8, 2),
-    sharex = True
+    figsize = (8, 4),
+    sharex = False
 )
+
+fig.subplots_adjust(wspace=0.15, hspace=1.95, left = 0.15, bottom = 0.08)
 
 for label, cdf, title, in zip(["A", "B", "C", "D"], cdfs, titles):
 
@@ -110,7 +116,7 @@ for label, cdf, title, in zip(["A", "B", "C", "D"], cdfs, titles):
 
         ax.legend(handles=new_handles, labels=labels, title="model")
 
-    ax.text(-0.1, 1.1, rf"$\textbf{{{label}}}$", transform=ax.transAxes, 
+    ax.text(-0.05, 1.1, rf"$\textbf{{{label}}}$", transform=ax.transAxes, 
             fontweight="bold", va="top", ha="left")
 
     ### arrows to individual runs
@@ -133,16 +139,65 @@ for label, cdf, title, in zip(["A", "B", "C", "D"], cdfs, titles):
     ax.set_xlim(0.0, 0.69)
     # ax.set_ylim(-0.01, 1.01)
     ax.set_yscale("log")
+    # ax.set_xscale("log")
     ax.set_title(title)
     ax.set_xlabel("")
     ax.set_ylabel("")
-    if ax != axes["A"]:
+    if ax != axes["A"] and ax != axes["C"]:
         ax.set_yticklabels([])
+    if ax != axes["C"] and ax != axes["D"]:
+        ax.set_xticklabels([])
+
+### PLOT E
+df = pd.read_csv("runs_mass/mass_sim_arity.csv", header=None, index_col=None)
+df.columns = ["arity", "T", "r_d"]
+
+sns.scatterplot(x = df["r_d"], y = df["T"], hue = df["arity"], palette = "flare", ax = axes["E"], s=25)
+
+axes["E"].set_ylim(-0.01, 1.01)
+axes["E"].set_xscale("log")
+axes["E"].set_xlabel("")
+axes["E"].set_ylabel("Time of largest burst")
+axes["E"].legend(title="Lineages captured\nin largest burst")
+axes["E"].set_title(r"$\rho = 45$, Beta ($\alpha = 1.1$)")
+
+axes["E"].text(-0.05, 1.05, r"$\textbf{E}$", transform=axes["E"].transAxes, 
+               fontweight="bold", va="top", ha="left")
+
+### arrows to individual runs
+for arrow_run, arrow_label in zip(indiv_runs_arrow, ["3A", "3B", "3C"]):
+    with open(arrow_run + "_rd", "r") as file:
+        x_target = float(file.read())
+    with open(arrow_run + "_biggestburst", "r") as file:
+        line = file.readline().strip()
+        max_arity, biggest_burst_T = line.split(",")
+        y_target = float(biggest_burst_T)
+
+    if arrow_label == "3A":
+        axes["E"].annotate(
+            arrow_label,
+            xy=(x_target, y_target),
+            xytext=(x_target + 0.003, y_target),
+            arrowprops=dict(arrowstyle="->")
+        )
+    elif arrow_label == "3B":
+        axes["E"].annotate(
+            arrow_label,
+            xy=(x_target, y_target),
+            xytext=(x_target + 0.03, y_target + 0.04),
+            arrowprops=dict(arrowstyle="->")
+        )
+    else: 
+        axes["E"].annotate(
+            arrow_label,
+            xy=(x_target, y_target),
+            xytext=(x_target + 0.1, y_target + 0.08),
+            arrowprops=dict(arrowstyle="->")
+        )
 
 sns.move_legend(axes["C"], "upper right")
-fig.text(0.5, 0.00, "$\\bar r_d$", ha="center")
+fig.text(0.5, 0.00, "Normalized index of association ($\\bar r_d$)", ha="center")
 fig.text(0.09, 0.5, "Probability", va="center", rotation="vertical")
-fig.subplots_adjust(left=0.15, bottom=0.15)
 
 if save_fig:
     plt.savefig("../figures/r_d_distribution.png", dpi=500, bbox_inches = "tight")

@@ -7,7 +7,6 @@ import matplotlib.ticker as mticker
 from sklearn.manifold import MDS
 from scipy.spatial.distance import squareform
 import scienceplots
-
 plt.style.use("science")
 plt.rcParams.update({
     "font.size": 10,
@@ -19,35 +18,15 @@ plt.rcParams.update({
     "figure.titlesize": 10,
 })
 
+###
 save_fig = True
 run_indices = ["unstructured_beta", "151", "119"]
-
-def load_run(run_index):
-    input_path = "runs_structured/" + run_index
-
-    with open(input_path + ".json", "r") as file:
-        params = json.load(file)
-
-    with open(input_path + "_dist", "rb") as file:
-        dist = pickle.load(file)
-        dist = np.array(dist)
-
-    with open(input_path + "_frac_clonal", "rb") as file:
-        clonal_tmrca = pickle.load(file)
-
-    with open(input_path + "_rd", "r") as file:
-        r_d = float(file.read())
-
-    frac_clonal, clonal_tmrca = map(np.array, zip(*clonal_tmrca))
-
-    recomb_status = [
-        "Fully recombined" if frac == 0 
-        else "Partially\nrecombined" if 0 < frac < 1 
-        else "Fully clonal" 
-        for frac in frac_clonal
-    ]
-
-    return dist, recomb_status, r_d, params
+recomb_status_palette = {
+    "Fully clonal": (1.0, 0.8784, 0.0),
+    "Partially\nrecombined": sns.color_palette()[1],
+    "Fully\nrecombined": sns.color_palette()[0]
+}
+###
 
 # CREATE FIGURE
 fig, axes = plt.subplot_mosaic(
@@ -59,14 +38,36 @@ fig, axes = plt.subplot_mosaic(
     sharex = True
 )
 
+def load_run(run_index):
+    input_path = "runs_structured/" + run_index
+    with open(input_path + ".json", "r") as file:
+        params = json.load(file)
+    with open(input_path + "_dist", "rb") as file:
+        dist = pickle.load(file)
+        dist = np.array(dist)
+    with open(input_path + "_frac_clonal", "rb") as file:
+        clonal_tmrca = pickle.load(file)
+    with open(input_path + "_rd", "r") as file:
+        r_d = float(file.read())
+
+    frac_clonal, clonal_tmrca = map(np.array, zip(*clonal_tmrca))
+
+    recomb_status = [
+        "Fully\nrecombined" if frac == 0 
+        else "Partially\nrecombined" if 0 < frac < 1 
+        else "Fully clonal" 
+        for frac in frac_clonal
+    ]
+
+    return dist, recomb_status, r_d, params
+
 bin_edges = np.linspace(0, 0.036, 40)
 
 for label, run_index in zip(["A", "B", "C"], run_indices):
     dist, recomb_status, r_d, params = load_run(run_index)
     ax = axes[label]
 
-    ### inset PCA & r_d value
-
+    ### inset MDS & r_d value
     if label == "C":
         inset_ax = ax.inset_axes([0.60, 0.50, 0.35, 0.35])
         ax.text(0.50, 0.95, f"$\\bar r_d$ = {r_d:.3f}", transform=ax.transAxes,
@@ -96,16 +97,15 @@ for label, run_index in zip(["A", "B", "C"], run_indices):
     inset_ax.set_ylabel("")
 
     ## main histogram
-
     sns.histplot(
         x=dist, stat="probability", hue=recomb_status,
-        bins=bin_edges, multiple="stack", hue_order=["Partially\nrecombined", "Fully recombined", "Fully clonal"],
-        ax=ax, legend = False,
+        bins=bin_edges, multiple="stack", hue_order=["Fully clonal", "Partially\nrecombined", "Fully\nrecombined"],
+        ax=ax, palette=recomb_status_palette, legend = (label == "A")
     )
 
     ax.text(-0.1, 1.10, rf"$\textbf{{{label}}}$", transform=ax.transAxes, 
             fontweight="bold", va="top", ha="left")
-    
+
     ax.xaxis.set_major_formatter(mticker.FormatStrFormatter("%.2f"))
     ax.yaxis.set_major_formatter(mticker.FormatStrFormatter("%.1f"))
     ax.set_ylim(0, 0.75)
@@ -117,9 +117,9 @@ for label, run_index in zip(["A", "B", "C"], run_indices):
     rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
     ax.set_title(f"$\\rho = {rho:.4g}$")
 
-
+sns.move_legend(axes["A"], "lower left")
 axes["A"].set_ylabel("Probability")
-fig.text(0.5, 0.00, "$d$", ha="center")
+fig.text(0.5, 0.00, "Pairwise genetic distance ($d$)", ha="center")
 fig.subplots_adjust(left=0.15, bottom=0.15)
 
 if save_fig:
