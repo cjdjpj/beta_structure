@@ -1,0 +1,14 @@
+{
+    "output": "runs_structured/75",
+    "length": 5000000,
+    "tract_length": 5000,
+    "nsample": 100,
+    "mu": 0.015,
+    "r": 0.0045,
+    "KT_2": 1.0,
+    "model": "beta",
+    "alpha": 1.1,
+    "ts_seed": 817530562,
+    "mut_seed": 1554853937,
+    "store_gc_nodes": true
+}

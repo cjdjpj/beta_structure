@@ -4,10 +4,6 @@ import json
 import pickle 
 import seaborn as sns
 import matplotlib.pyplot as plt
-import scipy.cluster.hierarchy as sch
-from scipy.spatial.distance import squareform
-from skbio.stats.ordination import pcoa
-from sklearn.manifold import TSNE
 
 ###
 save_fig = False
@@ -38,7 +34,7 @@ plt.ylabel("Frequency")
 if os.path.exists(input_path + "_rd"):
     plt.text(0.05, 0.8, f"$\\bar r_d$ = {r_d:.3f}", transform=plt.gca().transAxes,
              fontsize=9, verticalalignment='top')
-rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
+rho = 2 * params["r"] * params["tract_length"] * params["KT_2"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
 plt.title("Pairwise diversity histogram (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 plt.legend()
@@ -48,6 +44,9 @@ else:
     plt.show()
 
 # ### PCA
+# import scipy.cluster.hierarchy as sch
+# from scipy.spatial.distance import squareform
+# from skbio.stats.ordination import pcoa
 # dist_matrix = squareform(dist)
 # pcoa_results = pcoa(dist_matrix)
 #

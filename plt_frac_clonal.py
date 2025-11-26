@@ -35,7 +35,7 @@ g = sns.jointplot(
 
 mu = params["mu"]
 r = params["r"]
-t = params["track_length"]
+t = params["tract_length"]
 R = r * t
 
 if R != 0:
@@ -46,7 +46,7 @@ if R != 0:
 
 ## labels
 g.set_axis_labels("Proportion of genome", "Generations", fontsize=12)
-rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
+rho = 2 * params["r"] * params["tract_length"] * params["KT_2"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
 g.figure.suptitle("Fraction of clonal interval vs clonal $T_{\\text{mrca}}$ (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 

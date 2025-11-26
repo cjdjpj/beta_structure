@@ -42,7 +42,7 @@ for label, run_path in zip(["A", "B", "C", "D"], run_paths):
     for sample, values in sample_entropy_all_n.items():
         sns.lineplot(x=n_vals, y=values, label=sample, ax=ax, legend=False)
 
-    rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
+    rho = 2 * params["r"] * params["tract_length"] * params["KT_2"]
     alpha = params["alpha"]
     if label == "D":
         ax.set_title(f"3B\nBeta ($\\alpha = {alpha:.3g}, \\rho = {rho:.3g}$)")

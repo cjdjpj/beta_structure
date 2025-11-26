@@ -114,7 +114,7 @@ for label, run_index in zip(["A", "B", "C"], run_indices):
     if label != "A":
         ax.set_yticklabels([])
 
-    rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
+    rho = 2 * params["r"] * params["tract_length"] * params["KT_2"]
     ax.set_title(f"$\\rho = {rho:.4g}$")
 
 sns.move_legend(axes["A"], "lower left")

@@ -44,7 +44,7 @@ fig, axes = plt.subplot_mosaic(
 def expected_dist(f, avg_d):
     mu     = params["mu"]
     r      = params["r"]
-    t      = params["track_length"]
+    t      = params["tract_length"]
 
     # per base rate of replacement by recombination
     # R = r * (t) * np.exp(-blk_size/t)
@@ -78,7 +78,7 @@ for kingman_index, color in zip(kingman_indices, palette):
     avg_dist = np.mean(dist)
 
     # simulation points
-    rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
+    rho = 2 * params["r"] * params["tract_length"] * params["KT_2"]
     sns.scatterplot(x=frac_iden_blk, y=dist,
                     ax=axes["A"],
                     s=14, 

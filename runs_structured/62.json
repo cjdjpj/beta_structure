@@ -1,7 +1,7 @@
 {
     "output": "runs_structured/62",
     "length": 5000000,
-    "track_length": 5000,
+    "tract_length": 5000,
     "nsample": 100,
     "mu": 0.025,
     "KT_2": 0.6,

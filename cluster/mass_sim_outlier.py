@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser(
                     prog='sim')
 parser.add_argument('--output', type=str, default="output")
 parser.add_argument('--length', type=int, default=5000000)
-parser.add_argument('--track_length', type=int, default=5000)
+parser.add_argument('--tract_length', type=int, default=5000)
 parser.add_argument('--nsample', type=int, default=100)
 parser.add_argument('--mu', type=float, default=0.015)
 parser.add_argument('--r', type=float, default=0.00)
@@ -22,7 +22,7 @@ parser.add_argument('--alpha', type=float, default=None)
 args = parser.parse_args()
 
 l = args.length  # number of genes
-t = args.track_length  # tract length
+t = args.tract_length  # tract length
 r = args.r # recombination rate
 nsample = args.nsample  # the number of genomes sampled
 mu = args.mu  # mutation rate

@@ -103,7 +103,7 @@ for label, run_index in zip(["A", "B", "C", "D"], run_indices):
             verticalalignment="top")
     
     # subplot title/labels
-    rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
+    rho = 2 * params["r"] * params["tract_length"] * params["KT_2"]
     ax.set_title(f"$\\rho = {rho:.4g}$")
     ax.set_xlabel("")
     if ax != axes["A"]:

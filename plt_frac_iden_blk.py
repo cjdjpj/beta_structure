@@ -40,7 +40,7 @@ g = sns.jointplot(
     height=6, 
     space=0,
     xlim=(0,1),
-    ylim=(0,0.065),
+    ylim=(0,0.105),
     marginal_kws={"bins": 160}
 )
 
@@ -56,7 +56,7 @@ g.ax_joint.plot(n_x, n_y, color='grey', linestyle='--')
 def expected_dist(f):
     mu     = params["mu"]
     r      = params["r"]
-    t      = params["track_length"]
+    t      = params["tract_length"]
 
     # per base rate of replacement by recombination
     R = r * (t) * np.exp(-blk_size/t)
@@ -77,12 +77,12 @@ g.ax_joint.plot(r_x, r_y, color='red', linestyle='--')
 g.set_axis_labels("Proportion of 1kb base blocks identical", 
                   "Pairwise mean number of nucleotide differences", 
                   fontsize=12)
-rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
+rho = 2 * params["r"] * params["tract_length"] * params["KT_2"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
 g.figure.suptitle("Fraction of identical blocks vs distance (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 
 if save_fig:
-    g.figure.savefig("../figures/runs_full/" + run_index + "_frac_iden_blk.png", dpi=300, bbox_inches="tight")
+    g.figure.savefig("/Users/cjdjpj/Desktop/" + run_index + "_frac_iden_blk.png", dpi=300, bbox_inches="tight")
 else:
     plt.subplots_adjust(bottom=0.1, left=0.1, top=0.95)
     plt.show()

@@ -56,7 +56,7 @@ plt.ylabel("Frequency")
 if os.path.exists(input_path + "_rd"):
     plt.text(0.05, 0.75, f"$\\bar r_d$ = {r_d:.3f}", transform=plt.gca().transAxes,
              fontsize=9, verticalalignment='top')
-rho = 2 * params["r"] * params["track_length"] * params["KT_2"]
+rho = 2 * params["r"] * params["tract_length"] * params["KT_2"]
 model_str = "kingman" if params["model"] == "kingman" else "beta ($\\alpha = $" + str(params["alpha"]) + ")" 
 plt.title("Pairwise diversity histogram (" + model_str + ", $\\rho$=" + str(rho)  + ")")
 if save_fig:
